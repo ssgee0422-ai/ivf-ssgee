@@ -459,6 +459,8 @@ body{overscroll-behavior-x:none}
 .qa-o svg{width:16px;height:16px;flex:0 0 16px;stroke:var(--accent);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .qa-o:active{background:var(--soft)}
 .qa-sheet.more{padding:8px 14px}
+.emb-sum{display:flex;gap:14px;margin-top:10px;font-size:13px;color:var(--muted)}.emb-sum b{font-size:16px;margin-left:3px}
+.emb-tbl{margin-top:10px;border:1px solid var(--line);border-radius:14px;overflow:hidden}.emb-tbl table{width:100%;border-collapse:collapse;font-size:12px}.emb-tbl th{background:#faf7f6;color:var(--muted);font-size:11px;font-weight:700;padding:8px 6px;text-align:center}.emb-tbl td{padding:9px 6px;border-top:1px solid var(--line);text-align:center;vertical-align:middle}.emb-tbl .badge{white-space:nowrap}.emb-tbl td small{display:block;color:var(--muted);font-size:10px;margin-top:2px}.emb-tbl td.emb-def{text-align:left;font-size:11.5px;line-height:1.45;word-break:keep-all}
 .cyc-sw{display:flex;gap:6px;margin:0 0 12px}
 .cyc-sw button{border:1px solid var(--line);background:#fff;color:var(--text);border-radius:99px;padding:7px 14px;font-size:13px;font-weight:650}
 .cyc-sw button.on{background:#332f2e;color:#fff;border-color:#332f2e}
@@ -484,7 +486,8 @@ body{overscroll-behavior-x:none}
 
   <nav class="tabs">
     <button class="tab active" data-tab="dashboard">대시보드</button>
-    <button class="tab" data-tab="cycles">채취주기 & 배아</button>
+    <button class="tab" data-tab="cycles">채취주기</button>
+    <button class="tab" data-tab="embryos">배아관리</button>
     <button class="tab" data-tab="transfer">이식주기</button>
     <button class="tab" data-tab="labs">검사/진료 기록</button>
     <button class="tab" data-tab="medication">투약 관리</button>
@@ -512,18 +515,29 @@ body{overscroll-behavior-x:none}
     </section>
 
     <section id="cycles" class="panel">
-      <div class="cyc-sw"><button type="button" data-t="transfer" onclick="CYCSW('transfer')">이식주기</button><button type="button" data-t="cycles" onclick="CYCSW('cycles')">채취주기 &amp; 배아</button></div>
+      <div class="cyc-sw"><button type="button" data-t="transfer" onclick="CYCSW('transfer')">이식주기</button><button type="button" data-t="cycles" onclick="CYCSW('cycles')">채취주기</button><button type="button" data-t="embryos" onclick="CYCSW('embryos')">배아관리</button></div>
       <div class="card">
         <div class="sec-head">
-          <div><h2>채취주기 & 배아 관리 <button class="info-btn" type="button" aria-haspopup="dialog" aria-label="채취주기 &amp; 배아 관리 설명 보기" data-info="채취주기와 배아 상태를 기록합니다.">ⓘ</button></h2></div>
+          <div><h2>채취주기 관리 <button class="info-btn" type="button" aria-haspopup="dialog" aria-label="채취주기 관리 설명 보기" data-info="채취주기와 배아 상태를 기록합니다. 배아별 세부 정보는 배아관리 탭에서 차수별로 한눈에 볼 수 있어요.">ⓘ</button></h2></div>
           <button class="btn primary add-sm" onclick="openModal('cycle')">＋ 추가</button>
         </div>
         <div id="cycleList" style="margin-top:16px"></div>
       </div>
     </section>
 
+    <section id="embryos" class="panel">
+      <div class="cyc-sw"><button type="button" data-t="transfer" onclick="CYCSW('transfer')">이식주기</button><button type="button" data-t="cycles" onclick="CYCSW('cycles')">채취주기</button><button type="button" data-t="embryos" onclick="CYCSW('embryos')">배아관리</button></div>
+      <div class="card">
+        <div class="sec-head">
+          <div><h2>배아 관리 <button class="info-btn" type="button" aria-haspopup="dialog" aria-label="배아 관리 설명 보기" data-info="채취주기 차수별로 배아의 등급, PGT 결과, 염색체 결손 내용, 현재 상태(보관·사용·폐기)를 한눈에 확인합니다. 배아 정보는 채취주기 기록의 ‘배아 세부 정보’에서 입력·수정해요.">ⓘ</button></h2></div>
+        </div>
+        <div id="embSummary" style="margin-top:14px"></div>
+      </div>
+      <div id="embCycleList"></div>
+    </section>
+
     <section id="transfer" class="panel">
-      <div class="cyc-sw"><button type="button" data-t="transfer" onclick="CYCSW('transfer')">이식주기</button><button type="button" data-t="cycles" onclick="CYCSW('cycles')">채취주기 &amp; 배아</button></div>
+      <div class="cyc-sw"><button type="button" data-t="transfer" onclick="CYCSW('transfer')">이식주기</button><button type="button" data-t="cycles" onclick="CYCSW('cycles')">채취주기</button><button type="button" data-t="embryos" onclick="CYCSW('embryos')">배아관리</button></div>
       <div class="card">
         <div class="sec-head">
           <div><h2>이식주기 관리 <button class="info-btn" type="button" aria-haspopup="dialog" aria-label="이식주기 관리 설명 보기" data-info="채취주기 및 동결 배아 정보와 연동되어 이식 여정을 기록합니다. 이식 후 증상, 임신테스트기, 초음파 기록을 할 수 있습니다.">ⓘ</button></h2></div>
@@ -1616,7 +1630,7 @@ function del(type, id){
 
 // 전체 렌더링
 function renderAll(){
-  renderDashboard(); renderCycles(); renderTransfers(); renderLabs();
+  renderDashboard(); renderCycles(); if(window.renderEmbryos)renderEmbryos(); renderTransfers(); renderLabs();
   renderSupps(); renderDiets(); renderExercises(); renderTimeline();
   renderMemos(); renderFinance();
 }
@@ -2117,19 +2131,27 @@ document.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () =>
 document.getElementById('modal').addEventListener('click', e => { if(e.target.id==='modal') closeModal(); });
 
 // ===== v3.3 확장 =====
-const RES=['PGT미검사 동결보관','PGT 정상','PGT 모자이시즘'];
+const RES=['PGT미검사 동결보관','PGT 정상','PGT 모자이시즘','PGT 이상'];
+const PGTX=r=>r==='PGT 모자이시즘'||r==='PGT 이상';
 const AUX=[['prp','내막PRP'],['ig','면역 글로불린'],['kong','콩주사']];
 const MAPK={cycle:'cycles',transfer:'transfers',lab:'labs',event:'events'};
 const nl=t=>esc(t);
 function pgtText(c){return c.pgt==='예'?`${c.pgtCount||0}개`:(c.pgt==='아니오'?'미검사':'-')}
 function togglePgt(){const w=document.getElementById('f_pgtcnt_wrap'),s=document.getElementById('f_pgt');if(w&&s)w.style.display=s.value==='예'?'':'none'}
-function toggleMosaic(el){el.closest('.embryo-row').querySelector('.mosaic').style.display=el.value==='PGT 모자이시즘'?'':'none'}
+function toggleMosaic(el){
+  const row=el.closest('.embryo-row'),m=row.querySelector('.mosaic'),v=el.value,d=row.querySelector('.emb_disc');
+  m.style.display=PGTX(v)?'':'none';
+  m.querySelector('label').textContent=v==='PGT 이상'?'염색체 결손 내용 (PGT 이상)':'염색체 결손 내용 (모자이시즘)';
+  m.querySelector('textarea').placeholder=v==='PGT 이상'?'예: 16번 monosomy, 22번 trisomy':'예: 5번 monosomy 40%, 16번 trisomy 30%';
+  if(v==='PGT 이상'){if(!d.checked){d.checked=true;row.dataset.autoDisc='1'}}
+  else if(row.dataset.autoDisc==='1'){d.checked=false;row.dataset.autoDisc=''}
+}
 function addEmbryoRow(d={}){
   const c=document.getElementById('embryoInputs'); if(!c)return;
   const legacy=d.result==='해동중 폐기';
   const r=(!d.result||legacy)?RES[0]:d.result, div=document.createElement('div');
   const fromTransfer=!!(d.id&&usedSet().has(d.id));
-  const isUsed=!!d.used||fromTransfer, isDisc=!!d.discarded||legacy;
+  const isUsed=!!d.used||fromTransfer, isDisc=!!d.discarded||legacy||r==='PGT 이상';
   div.className='embryo-row'; div.dataset.id=d.id||uid();
   div.dataset.auto=(d.autoUsed||(!d.used&&fromTransfer))?'1':'';
   div.innerHTML=`<div class="emb-line">
@@ -2141,10 +2163,10 @@ function addEmbryoRow(d={}){
       <label class="emb-used"><input type="checkbox" class="emb_disc" ${isDisc?'checked':''}>폐기</label>
       <button class="btn danger sm" type="button" onclick="this.closest('.embryo-row').remove()">삭제</button>
     </div></div>
-    <div class="field mosaic" style="margin-top:6px;display:${r==='PGT 모자이시즘'?'':'none'}"><label>염색체 결손 내용 (모자이시즘)</label><textarea class="emb_mosaic" placeholder="예: 5번 monosomy 40%, 16번 trisomy 30%">${esc(d.mosaic)}</textarea></div>`;
+    <div class="field mosaic" style="margin-top:6px;display:${PGTX(r)?'':'none'}"><label>${r==='PGT 이상'?'염색체 결손 내용 (PGT 이상)':'염색체 결손 내용 (모자이시즘)'}</label><textarea class="emb_mosaic" placeholder="${r==='PGT 이상'?'예: 16번 monosomy, 22번 trisomy':'예: 5번 monosomy 40%, 16번 trisomy 30%'}">${esc(d.mosaic)}</textarea></div>`;
   c.appendChild(div);
 }
-function getEmbryosFromForm(){const l=[];document.querySelectorAll('.embryo-row').forEach(r=>{const q=s=>r.querySelector(s);const no=q('.emb_no').value,grade=q('.emb_grade').value,result=q('.emb_result').value,used=q('.emb_used').checked,discarded=q('.emb_disc').checked;if(no||grade||result!==RES[0]||used||discarded)l.push({id:r.dataset.id,no,grade,result,mosaic:result==='PGT 모자이시즘'?q('.emb_mosaic').value:'',used,discarded,autoUsed:r.dataset.auto==='1'})});return l}
+function getEmbryosFromForm(){const l=[];document.querySelectorAll('.embryo-row').forEach(r=>{const q=s=>r.querySelector(s);const no=q('.emb_no').value,grade=q('.emb_grade').value,result=q('.emb_result').value,used=q('.emb_used').checked,discarded=q('.emb_disc').checked;if(no||grade||result!==RES[0]||used||discarded)l.push({id:r.dataset.id,no,grade,result,mosaic:PGTX(result)?q('.emb_mosaic').value:'',used,discarded,autoUsed:r.dataset.auto==='1'})});return l}
 // 이식주기에서 선택된 배아 → 채취주기의 '사용완료' 자동 체크 (이식 기록 변경/삭제 시 자동 해제)
 function syncEmbryoUsed(){
   const u=usedSet();
@@ -2266,6 +2288,22 @@ function renderCycles(){
     ${costBlock(x)}${x.meds?`<div class="note" style="margin-top:8px"><b>사용 약물 및 용량</b><div class="ml" style="margin-top:3px">${nl(x.meds)}</div></div>`:''}${(x.art||[]).length?`<div class="kvg">${kvRow('보조생식술',x.art.map(a=>esc(a==='기타'?`기타(${x.artEtc||'직접입력'})`:a)))}</div>`:''}${x.note?`<div class="muted" style="margin-top:6px"><b>주기 메모</b><div class="ml" style="margin-top:2px">${nl(x.note)}</div></div>`:''}${emb}</div>`}).join('');
 }
 
+// 배아관리 탭 — 채취주기 차수별 배아 세부 정보
+function embResCls(r){return r==='PGT 정상'?'green':r==='PGT 모자이시즘'?'warn':r==='PGT 이상'?'danger':''}
+function renderEmbryos(){
+  const sm=document.getElementById('embSummary'),el=document.getElementById('embCycleList');if(!sm||!el)return;
+  const s=embStats(),u=usedSet(),ck=c=>c.retrieval||c.stim||c.start||'';
+  sm.innerHTML=`<div class="kpis"><div class="kpi"><div class="stat-label">전체 배아</div><strong>${s.total}개</strong></div><div class="kpi"><div class="stat-label">이식 배아 누계</div><strong>${s.usedN}개</strong></div><div class="kpi"><div class="stat-label">폐기</div><strong>${s.disc}개</strong></div><div class="kpi" style="background:var(--soft)"><div class="stat-label">보관 중</div><strong style="color:var(--accent)">${s.stored}개</strong></div></div>`;
+  if(!db.cycles.length){el.innerHTML='<div class="card empty" style="margin-top:14px">등록된 채취주기가 없습니다. 채취주기 탭에서 먼저 추가해 주세요.</div>';return}
+  const list=db.cycles.map((c,i)=>({c,i})).sort((a,b)=>ck(a.c).localeCompare(ck(b.c))||a.i-b.i);
+  el.innerHTML=list.map(({c},n)=>{
+    const l=c.embryosList||[],cnt={n:0,st:0,us:0,di:0};l.forEach(e=>{const t=embState(e,u)[0];cnt.n++;if(t==='보관중')cnt.st++;else if(t==='사용')cnt.us++;else cnt.di++});
+    const resCnt={};l.forEach(e=>{const r=e.result||RES[0];resCnt[r]=(resCnt[r]||0)+1});
+    const chips=Object.entries(resCnt).map(([k,v])=>`<span class="badge ${embResCls(k)}" style="margin-right:4px">${esc(k)} ${v}</span>`).join('');
+    const rows=l.length?`<div class="emb-tbl"><table><thead><tr><th>배아</th><th>PGT</th><th>염색체 결손 내용</th><th>상태</th></tr></thead><tbody>${l.map(e=>{const st=embState(e,u),r=e.result||RES[0];return `<tr><td><b>${esc(e.no||'배아')}</b><small>${esc(e.grade||'-')}</small></td><td><span class="badge ${embResCls(r)}">${esc(r.replace('PGT ',''))}</span></td><td class="emb-def">${e.mosaic?nl(e.mosaic):'<span class="muted">-</span>'}</td><td><span class="badge ${st[1]}">${st[0]}</span></td></tr>`}).join('')}</tbody></table></div>`:`<div class="muted" style="margin-top:10px;font-size:12px">배아 세부 정보가 등록되지 않았어요${+c.frozen?` (최종 동결 ${c.frozen}개)`:''}. 채취주기 탭에서 수정해 입력해 주세요.</div>`;
+    return `<div class="card" style="margin-top:14px"><div class="rec-head"><div><h3 style="margin:0"><span class="badge blue" style="margin-right:6px">${n+1}차</span>${esc(c.name)}</h3><div class="muted" style="margin-top:4px;font-size:12px">채취일 ${fmt(c.retrieval)} · 채취 ${c.eggs||0}개 · PGT ${pgtText(c)}</div></div></div>
+    ${l.length?`<div class="emb-sum"><span>전체 <b>${cnt.n}</b></span><span>보관 <b style="color:var(--green)">${cnt.st}</b></span><span>사용 <b style="color:var(--blue)">${cnt.us}</b></span><span>폐기 <b style="color:var(--danger)">${cnt.di}</b></span></div><div style="margin-top:8px">${chips}</div>`:''}${rows}</div>`}).join('');
+}
 // 이식주기 카드 (최신순)
 function renderTransfers(){
   migrateOrders();
@@ -3516,11 +3554,11 @@ if (window.LOGIN_DISABLED) {
 var BN=(function(){
   const tb=t=>document.querySelector('.tab[data-tab="'+t+'"]');
   let lastCyc='transfer';
-  const grp=t=>t==='dashboard'?'home':(t==='cycles'||t==='transfer')?'cyc':t==='medication'?'med':'more';
+  const grp=t=>t==='dashboard'?'home':(t==='cycles'||t==='transfer'||t==='embryos')?'cyc':t==='medication'?'med':'more';
   const add=document.getElementById('qaAdd'),more=document.getElementById('qaMore'),dim=document.getElementById('qaDim'),fab=document.getElementById('bnFab');
   function sync(){
     const a=document.querySelector('.tab.active'),t=a?a.dataset.tab:'dashboard';
-    if(t==='cycles'||t==='transfer')lastCyc=t;
+    if(t==='cycles'||t==='transfer'||t==='embryos')lastCyc=t;
     document.querySelectorAll('.bn[data-g]').forEach(b=>b.classList.toggle('on',b.dataset.g===grp(t)));
     document.querySelectorAll('.cyc-sw button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));
   }
@@ -3592,7 +3630,7 @@ var BN=(function(){
     requestAnimationFrame(step);
   });
   // 주기 탭(이식주기 ↔ 채취주기)에서만 좌우로 밀어 넘기기 — 손가락을 따라 화면이 같이 움직여요
-  const ORDER=['transfer','cycles'];
+  const ORDER=['transfer','cycles','embryos'];
   const main=document.querySelector('main');
   const BLOCK='input,textarea,select,canvas,video,.modal,.info-modal,.modal-bg,#ptCrop,#ptCam,#ptView,#loginOverlay,.toast,.bnav,.qa-sheet,.qa-dim,.bn-fab,.pick-chips,.cyc-sw';
   function blocked(path){
@@ -3607,32 +3645,45 @@ var BN=(function(){
   }
   let st=null;
   const activeTab=()=>{const a=document.querySelector('.tab.active');return a?a.dataset.tab:''};
-  function begin(){
-    const idx=ORDER.indexOf(st.cur),nbId=ORDER[1-idx];
-    st.idx=idx;st.cs=document.getElementById(st.cur);st.nb=document.getElementById(nbId);st.nbId=nbId;
-    st.base=idx===0?st.W:-st.W;
+  function clearNb(){
+    if(st&&st.nb){st.nb.style.cssText='';st.nb=null;st.dir=0}
+  }
+  function setup(d){
+    // d: +1 = 다음 탭(왼쪽으로 밀기), -1 = 이전 탭
+    clearNb();
+    const nbId=ORDER[st.idx+d];
+    st.dir=d;
+    if(!nbId){st.nb=null;st.nbId=null;return}
+    st.nbId=nbId;st.nb=document.getElementById(nbId);
+    st.base=d>0?st.W:-st.W;
     const top=Math.max(0,(window.scrollY||0)-(main.getBoundingClientRect().top+(window.scrollY||0)));
     st.nb.style.cssText='display:block;position:absolute;left:0;right:0;top:'+top+'px;will-change:transform;transform:translateX('+st.base+'px)';
-    st.cs.style.willChange='transform';
-    main.style.position='relative';main.style.overflow='hidden';
     main.style.minHeight=Math.max(st.cs.offsetHeight,st.nb.offsetHeight+top)+'px';
   }
+  function begin(){
+    st.idx=ORDER.indexOf(st.cur);st.cs=document.getElementById(st.cur);st.nb=null;st.dir=0;
+    st.cs.style.willChange='transform';
+    main.style.position='relative';main.style.overflow='hidden';
+  }
   function apply(dx){
-    const ok=(st.idx===0&&dx<0)||(st.idx===1&&dx>0);
-    const eff=ok?dx:dx*0.2;
-    st.cs.style.transform='translateX('+eff+'px)';
-    st.nb.style.transform='translateX('+(st.base+(ok?dx:0))+'px)';
+    const d=dx<0?1:-1;
+    if(st.dir!==d)setup(d);
+    if(st.nb){
+      st.cs.style.transform='translateX('+dx+'px)';
+      st.nb.style.transform='translateX('+(st.base+dx)+'px)';
+    }else st.cs.style.transform='translateX('+(dx*0.2)+'px)';
   }
   function finish(go){
     if(!st||!st.cs)return;
     const s2=st;st=null;
     const T='transform .24s cubic-bezier(.22,.8,.3,1)';
-    s2.cs.style.transition=T;s2.nb.style.transition=T;
+    s2.cs.style.transition=T;if(s2.nb)s2.nb.style.transition=T;
+    go=go&&!!s2.nb;
     s2.cs.style.transform='translateX('+(go?-s2.base:0)+'px)';
-    s2.nb.style.transform='translateX('+(go?0:s2.base)+'px)';
+    if(s2.nb)s2.nb.style.transform='translateX('+(go?0:s2.base)+'px)';
     setTimeout(()=>{
       if(go){const b=document.querySelector('.tab[data-tab="'+s2.nbId+'"]');if(b)b.click()}
-      s2.cs.style.cssText='';s2.nb.style.cssText='';
+      s2.cs.style.cssText='';if(s2.nb)s2.nb.style.cssText='';
       main.style.position='';main.style.overflow='';main.style.minHeight='';
       if(go)window.scrollTo(0,0);
     },250);
@@ -3660,8 +3711,7 @@ var BN=(function(){
     if(!st)return;
     if(st.lock!=='h'){st=null;return}
     const dx=st.dx,W=st.W,v=Math.abs(dx)/Math.max(1,Date.now()-st.t);
-    const ok=(st.idx===0&&dx<0)||(st.idx===1&&dx>0);
-    finish(ok&&(Math.abs(dx)>W*0.28||(v>0.45&&Math.abs(dx)>40)));
+    finish(Math.abs(dx)>W*0.28||(v>0.45&&Math.abs(dx)>40));
   },{passive:true});
   document.addEventListener('touchcancel',()=>{if(st&&st.lock==='h')finish(false);else st=null},{passive:true});
 })();
