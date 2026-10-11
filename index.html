@@ -2139,19 +2139,20 @@ const nl=t=>esc(t);
 function pgtText(c){return c.pgt==='예'?`${c.pgtCount||0}개`:(c.pgt==='아니오'?'미검사':'-')}
 function togglePgt(){const w=document.getElementById('f_pgtcnt_wrap'),s=document.getElementById('f_pgt');if(w&&s)w.style.display=s.value==='예'?'':'none'}
 function toggleMosaic(el){
-  const row=el.closest('.embryo-row'),m=row.querySelector('.mosaic'),v=el.value,d=row.querySelector('.emb_disc');
+  const row=el.closest('.embryo-row'),m=row.querySelector('.mosaic'),v=el.value,d=row.querySelector('.emb_disc'),th=row.querySelector('.emb_thaw');
   m.style.display=PGTX(v)?'':'none';
   m.querySelector('label').textContent=v==='PGT 이상'?'염색체 결손 내용 (PGT 이상)':'염색체 결손 내용 (모자이시즘)';
   m.querySelector('textarea').placeholder=v==='PGT 이상'?'예: 16번 monosomy, 22번 trisomy':'예: 5번 monosomy 40%, 16번 trisomy 30%';
-  if(v==='PGT 이상'){if(!d.checked){d.checked=true;row.dataset.autoDisc='1'}}
+  if(v==='PGT 이상'){if(!d.checked){d.checked=true;th.checked=false;row.dataset.autoDisc='1'}}
   else if(row.dataset.autoDisc==='1'){d.checked=false;row.dataset.autoDisc=''}
 }
 function addEmbryoRow(d={}){
   const c=document.getElementById('embryoInputs'); if(!c)return;
   const legacy=d.result==='해동중 폐기';
+  const isThaw=!!d.thawDisc||legacy;
   const r=(!d.result||legacy)?RES[0]:d.result, div=document.createElement('div');
   const fromTransfer=!!(d.id&&usedSet().has(d.id));
-  const isUsed=!!d.used||fromTransfer, isDisc=!!d.discarded||legacy||r==='PGT 이상';
+  const isUsed=!!d.used||fromTransfer, isDisc=!isThaw&&(!!d.discarded||r==='PGT 이상');
   div.className='embryo-row'; div.dataset.id=d.id||uid();
   div.dataset.auto=(d.autoUsed||(!d.used&&fromTransfer))?'1':'';
   div.innerHTML=`<div class="emb-line">
@@ -2160,25 +2161,26 @@ function addEmbryoRow(d={}){
     <div class="field" style="flex:1.4"><label>결과</label><select class="emb_result" onchange="toggleMosaic(this)">${RES.map(o=>`<option ${o===r?'selected':''}>${o}</option>`).join('')}</select></div>
     <div class="emb-flags">
       <label class="emb-used"><input type="checkbox" class="emb_used" ${isUsed?'checked':''}>사용완료</label>
-      <label class="emb-used"><input type="checkbox" class="emb_disc" ${isDisc?'checked':''}>폐기</label>
+      <label class="emb-used"><input type="checkbox" class="emb_disc" ${isDisc?'checked':''} onchange="if(this.checked)this.closest('.embryo-row').querySelector('.emb_thaw').checked=false">미사용 폐기</label>
+      <label class="emb-used"><input type="checkbox" class="emb_thaw" ${isThaw?'checked':''} onchange="if(this.checked)this.closest('.embryo-row').querySelector('.emb_disc').checked=false">해동중 폐기</label>
       <button class="btn danger sm" type="button" onclick="this.closest('.embryo-row').remove()">삭제</button>
     </div></div>
     <div class="field mosaic" style="margin-top:6px;display:${PGTX(r)?'':'none'}"><label>${r==='PGT 이상'?'염색체 결손 내용 (PGT 이상)':'염색체 결손 내용 (모자이시즘)'}</label><textarea class="emb_mosaic" placeholder="${r==='PGT 이상'?'예: 16번 monosomy, 22번 trisomy':'예: 5번 monosomy 40%, 16번 trisomy 30%'}">${esc(d.mosaic)}</textarea></div>`;
   c.appendChild(div);
 }
-function getEmbryosFromForm(){const l=[];document.querySelectorAll('.embryo-row').forEach(r=>{const q=s=>r.querySelector(s);const no=q('.emb_no').value,grade=q('.emb_grade').value,result=q('.emb_result').value,used=q('.emb_used').checked,discarded=q('.emb_disc').checked;if(no||grade||result!==RES[0]||used||discarded)l.push({id:r.dataset.id,no,grade,result,mosaic:PGTX(result)?q('.emb_mosaic').value:'',used,discarded,autoUsed:r.dataset.auto==='1'})});return l}
+function getEmbryosFromForm(){const l=[];document.querySelectorAll('.embryo-row').forEach(r=>{const q=s=>r.querySelector(s);const no=q('.emb_no').value,grade=q('.emb_grade').value,result=q('.emb_result').value,used=q('.emb_used').checked,discarded=q('.emb_disc').checked,thawDisc=q('.emb_thaw').checked;if(no||grade||result!==RES[0]||used||discarded||thawDisc)l.push({id:r.dataset.id,no,grade,result,mosaic:PGTX(result)?q('.emb_mosaic').value:'',used,discarded,thawDisc,autoUsed:r.dataset.auto==='1'})});return l}
 // 이식주기에서 선택된 배아 → 채취주기의 '사용완료' 자동 체크 (이식 기록 변경/삭제 시 자동 해제)
 function syncEmbryoUsed(){
   const u=usedSet();
   db.cycles.forEach(c=>(c.embryosList||[]).forEach(e=>{
-    if(e.result==='해동중 폐기'){e.result=RES[0];e.discarded=true}
+    if(e.result==='해동중 폐기'){e.result=RES[0];e.thawDisc=true;e.discarded=false}
     if(u.has(e.id)){if(!e.used){e.used=true;e.autoUsed=true}}
     else if(e.autoUsed){e.used=false;e.autoUsed=false}
   }));
 }
 function embLabel(e){return `${e.no||'배아'} (${e.grade||'-'} / ${e.result||RES[0]})`}
 function usedSet(){const s=new Set();db.transfers.forEach(t=>trEmbIds(t).forEach(i=>s.add(i)));return s}
-function embState(e,u){return (e.discarded||e.result==='해동중 폐기')?['폐기','danger']:(e.used||u.has(e.id))?['사용','blue']:['보관중','green']}
+function embState(e,u){return (e.thawDisc||e.result==='해동중 폐기')?['폐기','danger','해동중 폐기']:e.discarded?['폐기','danger','미사용 폐기']:(e.used||u.has(e.id))?['사용','blue']:['보관중','green']}
 function embStats(){const u=usedSet();let total=0,stored=0,usedN=0,disc=0,res={};
   db.cycles.forEach(c=>{const l=c.embryosList||[];if(!l.length){total+=+c.frozen||0;stored+=+c.frozen||0;return}
     l.forEach(e=>{total++;const s=embState(e,u)[0];if(s==='폐기')disc++;else if(s==='사용')usedN++;else{stored++;const r=e.result||RES[0];res[r]=(res[r]||0)+1}})});
@@ -2190,7 +2192,7 @@ function embOptions(sel,all){
   const list=c.embryosList||[];
   if(!list.length)return '<option value="">등록된 연동 배아가 없습니다</option>';
   const me=window._edit?.id,uo=new Set();db.transfers.forEach(t=>{if(t.id!==me)trEmbIds(t).forEach(i=>uo.add(i))});
-  return '<option value="">-- 배아 선택 --</option>'+list.filter(e=>(!e.discarded&&e.result!=='해동중 폐기')||(all||[]).includes(e.id)).map(e=>`<option value="${e.id}" ${e.id===sel?'selected':''}>${esc(embLabel(e))}${(uo.has(e.id)||e.used)?' [사용됨]':''}</option>`).join('');
+  return '<option value="">-- 배아 선택 --</option>'+list.filter(e=>(!e.discarded&&!e.thawDisc&&e.result!=='해동중 폐기')||(all||[]).includes(e.id)).map(e=>`<option value="${e.id}" ${e.id===sel?'selected':''}>${esc(embLabel(e))}${(uo.has(e.id)||e.used)?' [사용됨]':''}</option>`).join('');
 }
 function embSelRow(sel,all,i){return `<div class="dynamic-row emb-sel-row"><select class="emb_sel" style="flex:1;min-width:0">${embOptions(sel,all)}</select>${i>0?'<button class="btn danger sm" type="button" onclick="this.parentElement.remove()">삭제</button>':''}</div>`}
 function updateEmbryoOptions(ids){
@@ -2282,7 +2284,7 @@ function renderCycles(){
   selFix('cycle');
   el.innerHTML=cardChips('cycle')+db.cycles.map((c,i)=>({c,i})).filter(({c})=>selCard.cycle==='all'||c.id===selCard.cycle).sort((a,b)=>ck(b.c).localeCompare(ck(a.c))||b.i-a.i).map(({c:x})=>{
     const l=x.embryosList||[],stored=l.filter(e=>embState(e,u)[0]==='보관중').length;
-    const emb=l.length?`<div style="margin-top:10px;background:#faf7f7;padding:10px;border-radius:10px"><div style="font-weight:bold;font-size:11px;color:var(--accent);margin-bottom:5px">[배아 세부 정보]</div><div style="display:flex;gap:8px;flex-wrap:wrap">${l.map(e=>{const s=embState(e,u);return `<div style="background:#fff;border:1px solid #e0d0d0;padding:6px 10px;border-radius:8px;font-size:11px"><b>${esc(e.no||'배아')}</b> | ${esc(e.grade||'-')} | <span class="badge">${esc(e.result||RES[0])}</span> <span class="badge ${s[1]}">${s[0]}</span>${e.mosaic?`<div class="muted" style="margin-top:3px">결손: ${esc(e.mosaic)}</div>`:''}</div>`}).join('')}</div></div>`:'';
+    const emb=l.length?`<div style="margin-top:10px;background:#faf7f7;padding:10px;border-radius:10px"><div style="font-weight:bold;font-size:11px;color:var(--accent);margin-bottom:5px">[배아 세부 정보]</div><div style="display:flex;gap:8px;flex-wrap:wrap">${l.map(e=>{const s=embState(e,u);return `<div style="background:#fff;border:1px solid #e0d0d0;padding:6px 10px;border-radius:8px;font-size:11px"><b>${esc(e.no||'배아')}</b> | ${esc(e.grade||'-')} | <span class="badge">${esc(e.result||RES[0])}</span> <span class="badge ${s[1]}">${s[2]||s[0]}</span>${e.mosaic?`<div class="muted" style="margin-top:3px">결손: ${esc(e.mosaic)}</div>`:''}</div>`}).join('')}</div></div>`:'';
     return `<div class="card" style="margin-bottom:14px;background:#fff"><div class="rec-head"><div><h3 style="margin:0">${esc(x.name)} ${x.doctor?`<span class="badge blue">주치의: ${esc(x.doctor)}</span>`:''}</h3><div class="muted date-lines" style="margin-top:4px"><div>생리시작: ${fmt(x.start)}</div><div>자극시작: ${fmt(x.stim)}</div><div>채취일: ${fmt(x.retrieval)}</div></div></div><div class="rec-btns"><button class="btn sm" onclick="editRecord('cycle','${x.id}')">수정</button><button class="btn danger sm" onclick="del('cycles','${x.id}')">삭제</button></div></div>
     <div class="kpis" style="margin-top:12px"><div class="kpi"><div class="stat-label">채취 난자</div><strong>${x.eggs||0}개</strong></div><div class="kpi"><div class="stat-label">수정 성공</div><strong>${x.fert||0}개</strong></div><div class="kpi"><div class="stat-label">PGT 검사</div><strong>${pgtText(x)}</strong></div><div class="kpi"><div class="stat-label">최종 동결 배아</div><strong>${x.frozen||0}개</strong></div>${l.length?`<div class="kpi" style="background:var(--soft)"><div class="stat-label">보관 중</div><strong>${stored}개</strong></div>`:''}</div>
     ${costBlock(x)}${x.meds?`<div class="note" style="margin-top:8px"><b>사용 약물 및 용량</b><div class="ml" style="margin-top:3px">${nl(x.meds)}</div></div>`:''}${(x.art||[]).length?`<div class="kvg">${kvRow('보조생식술',x.art.map(a=>esc(a==='기타'?`기타(${x.artEtc||'직접입력'})`:a)))}</div>`:''}${x.note?`<div class="muted" style="margin-top:6px"><b>주기 메모</b><div class="ml" style="margin-top:2px">${nl(x.note)}</div></div>`:''}${emb}</div>`}).join('');
@@ -2300,7 +2302,7 @@ function renderEmbryos(){
     const l=c.embryosList||[],cnt={n:0,st:0,us:0,di:0};l.forEach(e=>{const t=embState(e,u)[0];cnt.n++;if(t==='보관중')cnt.st++;else if(t==='사용')cnt.us++;else cnt.di++});
     const resCnt={};l.forEach(e=>{const r=e.result||RES[0];resCnt[r]=(resCnt[r]||0)+1});
     const chips=Object.entries(resCnt).map(([k,v])=>`<span class="badge ${embResCls(k)}" style="margin-right:4px">${esc(k)} ${v}</span>`).join('');
-    const rows=l.length?`<div class="emb-tbl"><table><thead><tr><th>배아</th><th>PGT</th><th>염색체 결손 내용</th><th>상태</th></tr></thead><tbody>${l.map(e=>{const st=embState(e,u),r=e.result||RES[0];return `<tr><td><b>${esc(e.no||'배아')}</b><small>${esc(e.grade||'-')}</small></td><td><span class="badge ${embResCls(r)}">${esc(r.replace('PGT ',''))}</span></td><td class="emb-def">${e.mosaic?nl(e.mosaic):'<span class="muted">-</span>'}</td><td><span class="badge ${st[1]}">${st[0]}</span></td></tr>`}).join('')}</tbody></table></div>`:`<div class="muted" style="margin-top:10px;font-size:12px">배아 세부 정보가 등록되지 않았어요${+c.frozen?` (최종 동결 ${c.frozen}개)`:''}. 채취주기 탭에서 수정해 입력해 주세요.</div>`;
+    const rows=l.length?`<div class="emb-tbl"><table><thead><tr><th>배아</th><th>PGT</th><th>염색체 결손 내용</th><th>상태</th></tr></thead><tbody>${l.map(e=>{const st=embState(e,u),r=e.result||RES[0];return `<tr><td><b>${esc(e.no||'배아')}</b><small>${esc(e.grade||'-')}</small></td><td><span class="badge ${embResCls(r)}">${esc(r.replace('PGT ',''))}</span></td><td class="emb-def">${e.mosaic?nl(e.mosaic):'<span class="muted">-</span>'}</td><td><span class="badge ${st[1]}">${st[2]||st[0]}</span></td></tr>`}).join('')}</tbody></table></div>`:`<div class="muted" style="margin-top:10px;font-size:12px">배아 세부 정보가 등록되지 않았어요${+c.frozen?` (최종 동결 ${c.frozen}개)`:''}. 채취주기 탭에서 수정해 입력해 주세요.</div>`;
     return `<div class="card" style="margin-top:14px"><div class="rec-head"><div><h3 style="margin:0"><span class="badge blue" style="margin-right:6px">${n+1}차</span>${esc(c.name)}</h3><div class="muted" style="margin-top:4px;font-size:12px">채취일 ${fmt(c.retrieval)} · 채취 ${c.eggs||0}개 · PGT ${pgtText(c)}</div></div></div>
     ${l.length?`<div class="emb-sum"><span>전체 <b>${cnt.n}</b></span><span>보관 <b style="color:var(--green)">${cnt.st}</b></span><span>사용 <b style="color:var(--blue)">${cnt.us}</b></span><span>폐기 <b style="color:var(--danger)">${cnt.di}</b></span></div><div style="margin-top:8px">${chips}</div>`:''}${rows}</div>`}).join('');
 }
