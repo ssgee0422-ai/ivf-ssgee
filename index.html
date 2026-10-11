@@ -25,7 +25,7 @@ button,input,select,textarea{font:inherit}
 button{cursor:pointer}
 .app{max-width:1180px;margin:auto;padding:24px 18px 60px}
 .hero{background:linear-gradient(135deg,#f4e6e8,#fbf7f4 65%);border:1px solid var(--line);border-radius:28px;padding:22px 26px;box-shadow:var(--shadow);margin-bottom:16px}
-.eyebrow{font-size:30px;letter-spacing:.06em;color:var(--accent);font-weight:800;line-height:1.15;margin-bottom:6px}
+.eyebrow{font-size:10px;letter-spacing:.14em;color:var(--accent);font-weight:700}
 h1{margin:6px 0 4px;font-size:32px;letter-spacing:-.04em}
 .subtitle{color:var(--muted);margin:0;font-size:13px}
 .top-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
@@ -209,7 +209,6 @@ body{padding-bottom:env(safe-area-inset-bottom,0px)}
   h1{font-size:22px;margin:4px 0}
   .subtitle{font-size:12px}
   .top-actions{display:grid;grid-template-columns:repeat(12,1fr);gap:6px;margin-top:10px}
-  .eyebrow{font-size:25px;letter-spacing:.05em;margin-bottom:4px}
   .top-actions .btn{padding:7px 4px;min-height:36px;text-align:center;white-space:nowrap;font-size:13px}
   .top-actions .add{grid-column:span 4}.top-actions .util{grid-column:span 5}.top-actions .util.pill{grid-column:span 2;font-size:16px}
   .tabs{margin:0 -12px;padding:6px 12px 10px}
@@ -372,18 +371,6 @@ body{padding-bottom:env(safe-area-inset-bottom,0px)}
   .fin-tbl th:first-child,.fin-tbl td:first-child{min-width:0;padding-left:2px;word-break:keep-all;overflow-wrap:anywhere}
   .fin-tbl th:last-child,.fin-tbl td:last-child{padding-right:2px}
 }
-/* ===== 입체 버튼 ===== */
-.btn,.tab,.pick-chip,.pm-act button,.close{transition:transform .08s ease,box-shadow .08s ease;-webkit-tap-highlight-color:transparent}
-.btn,.pick-chip,.pm-act button{background-image:linear-gradient(180deg,#ffffff 0%,#f3ecea 100%);box-shadow:0 2px 0 #d9ccc9,0 5px 9px rgba(70,45,45,.13),inset 0 1px 0 #fff}
-.tab{background-image:linear-gradient(180deg,#ffffff 0%,#f4eeec 100%);box-shadow:0 2px 0 #dccfcc,0 4px 8px rgba(70,45,45,.10),inset 0 1px 0 #fff}
-.tab.active{background-image:linear-gradient(180deg,#4a4340 0%,#262120 100%);box-shadow:0 3px 0 #0f0c0b,0 6px 10px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.18)}
-.pick-chip.on{background-image:linear-gradient(180deg,#4a4340 0%,#262120 100%);box-shadow:0 3px 0 #0f0c0b,0 5px 9px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.18)}
-.btn.primary,.btn.add{background-image:linear-gradient(180deg,#b6838b 0%,#8c5c64 100%);border-color:#7b4f57;text-shadow:0 1px 0 rgba(0,0,0,.18);box-shadow:0 3px 0 #664048,0 6px 11px rgba(102,64,72,.30),inset 0 1px 0 rgba(255,255,255,.38)}
-.btn.danger{background-image:linear-gradient(180deg,#ffffff 0%,#fbe6e6 100%);box-shadow:0 2px 0 #ecbcbc,0 5px 9px rgba(190,70,70,.14),inset 0 1px 0 #fff}
-.top-actions .btn.util{background-image:linear-gradient(180deg,#ffffff 0%,#f6efed 100%);box-shadow:0 2px 0 #e6dbd8,0 4px 8px rgba(70,45,45,.09),inset 0 1px 0 #fff}
-.top-actions .btn.util.pill{box-shadow:0 3px 0 #6b434b,0 6px 10px rgba(102,64,72,.25),inset 0 1px 0 #fff}
-.close{background-image:linear-gradient(180deg,#fbf8f7 0%,#ebe3e0 100%);box-shadow:0 2px 0 #d5c9c6,inset 0 1px 0 #fff}
-.btn:active,.tab:active,.pick-chip:active,.pm-act button:active,.close:active{transform:translateY(2px);box-shadow:0 0 0 transparent,inset 0 2px 5px rgba(0,0,0,.22)}
 .btn:disabled{opacity:.55;transform:none}
 
 /* ===== 맨 위로 버튼 ===== */
@@ -397,7 +384,8 @@ body{padding-bottom:env(safe-area-inset-bottom,0px)}
 <div class="app">
   <header class="hero">
     <div class="eyebrow">MY IVF JOURNEY</div>
-    <p class="subtitle">나의 시험관 여정을 차곡차곡 기록해보세요.</p>
+    <h1>IVF 아카이브</h1>
+    <p class="subtitle">나의 시험관 여정을 차곡차곡 기록해보세요..</p>
     <div class="top-actions">
       <button class="btn primary add" onclick="openModal('cycle')">＋ 채취 기록</button>
       <button class="btn primary add" onclick="openModal('transfer')">＋ 이식 기록</button>
@@ -776,10 +764,6 @@ h1{margin:0 0 5px;font-size:24px}h2{margin:0;font-size:17px}.muted{color:#6b7280
   .modal{margin:auto;}
 }
 /* ===== 입체 버튼 ===== */
-.btn{background-image:linear-gradient(180deg,#ffffff 0%,#eceef2 100%);box-shadow:0 2px 0 #cfd3da,0 5px 9px rgba(30,35,50,.12),inset 0 1px 0 #fff;transition:transform .08s ease,box-shadow .08s ease;-webkit-tap-highlight-color:transparent}
-.btn.primary,.primary.btn{background-image:linear-gradient(180deg,#8478f2 0%,#5646d4 100%);border-color:#4a3cc0;text-shadow:0 1px 0 rgba(0,0,0,.2);box-shadow:0 3px 0 #3a2f9f,0 6px 11px rgba(87,70,212,.30),inset 0 1px 0 rgba(255,255,255,.35)}
-.btn.danger{background-image:linear-gradient(180deg,#ffffff 0%,#ffe6e6 100%);box-shadow:0 2px 0 #f2b4b4,0 5px 9px rgba(212,68,68,.14),inset 0 1px 0 #fff}
-.btn:active{transform:translateY(2px);box-shadow:0 0 0 transparent,inset 0 2px 5px rgba(0,0,0,.22)}
 .btn:disabled{opacity:.55;transform:none}
 @media(max-width:520px){.sch-toolbar{gap:4px}.sch-toolbar h2{font-size:13.5px}.sch-toolbar .actions{flex-wrap:nowrap;gap:3px}.sch-toolbar .btn-sm{padding:3px 5px!important;font-size:9.5px!important}}
 </style>
