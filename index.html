@@ -384,6 +384,19 @@ body{padding-bottom:env(safe-area-inset-bottom,0px)}
 #qaAdd .qa-o:active,#qaAdd .qa-o.sel{background:var(--accent);border-color:var(--accent);color:#fff}
 #qaAdd .qa-o:active svg,#qaAdd .qa-o.sel svg{stroke:#fff}
 
+
+/* ===== 더보기 팝업: 글자 폭에 맞추고 우측 정렬 ===== */
+#qaMore{left:auto;right:12px;width:max-content;max-width:calc(100vw - 24px);padding:6px 10px}
+#qaMore .qa-o{justify-content:center;gap:8px;padding:12px 14px;border-radius:12px}
+#qaMore .qa-o span{white-space:nowrap}
+@media(min-width:620px){#qaMore{right:calc(50% - 272px)}}
+
+
+/* ===== 키보드가 올라와도 입력창이 위에 보이도록 ===== */
+.modal,.info-modal{bottom:auto!important;top:var(--vvt,0px)!important;height:var(--vvh,100%)}
+.modal-box{max-height:calc(var(--vvh,100vh) - 28px)!important}
+.info-box{max-height:calc(var(--vvh,100vh) - 36px)!important}
+
 /* ===== 상단 제목줄 + 동기화 점 ===== */
 .hero{position:relative;padding:11px 22px 11px 16px!important;border-radius:16px!important;margin-bottom:10px!important}
 .hero-line{display:flex;align-items:baseline;flex-wrap:nowrap;white-space:nowrap;overflow:hidden;gap:0 6px;padding-right:12px;cursor:pointer;-webkit-tap-highlight-color:transparent}
@@ -578,11 +591,9 @@ body{overscroll-behavior-x:none}
 <button class="qa-o" type="button" onclick="BN.pick(this,'cycle')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C8 2 4.5 9 4.5 14a7.5 7.5 0 0 0 15 0C19.5 9 16 2 12 2z"/></svg><span>채취 기록</span></button>
 <button class="qa-o" type="button" onclick="BN.pick(this,'transfer')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></svg><span>이식 기록</span></button>
 <button class="qa-o" type="button" onclick="BN.pick(this,'lab')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 2v2"/><path d="M5 2v2"/><path d="M5 3H4a2 2 0 0 0-2 2v4a6 6 0 0 0 12 0V5a2 2 0 0 0-2-2h-1"/><path d="M8 15a6 6 0 0 0 12 0v-3"/><circle cx="20" cy="10" r="2"/></svg><span>검사/진료</span></button>
-<button class="qa-o" type="button" onclick="BN.pick(this,'med')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.5 20.5a4.95 4.95 0 0 1-7-7l10-10a4.95 4.95 0 0 1 7 7z"/><path d="M8.5 8.5l7 7"/></svg><span>투약 관리</span></button>
 <button class="qa-o" type="button" onclick="BN.pick(this,'diet')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/></svg><span>식단 기록</span></button>
 <button class="qa-o" type="button" onclick="BN.pick(this,'exercise')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg><span>운동 기록</span></button>
 <button class="qa-o" type="button" onclick="BN.pick(this,'supp')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg><span>영양제 기록</span></button>
-<button class="qa-o" type="button" onclick="BN.pick(this,'sub')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17.5v-11"/></svg><span>비용/지원</span></button>
 <button class="qa-o" type="button" onclick="BN.pick(this,'memo')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4z"/></svg><span>메모</span></button>
 </div></div>
 <div class="qa-sheet more" id="qaMore">
@@ -884,6 +895,35 @@ h2{font-size:17px;font-weight:750}
 .empty{color:#857c79}
 .row.dragging,.row.touch-dragging{background:#f5ebed;border-color:#9b6b72}
 .row.drag-over{border-top-color:#9b6b72}
+
+/* ===== 투약: 화면 전환 / 제목 통일 / 표 ===== */
+[hidden]{display:none!important}
+.stats.vnav{grid-template-columns:repeat(4,1fr)!important}
+.stats.vnav .stat{font:inherit;color:#332f2e;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:52px;border:1px solid #eee6e2;background:#fff;font-size:12px;font-weight:700;padding:8px 4px;border-radius:14px;-webkit-tap-highlight-color:transparent}
+.stats.vnav .stat .label{font-size:10px;font-weight:600}
+.stats.vnav .stat .value{font-size:15px;margin-top:2px;white-space:nowrap}
+.stats.vnav .stat.on{background:#332f2e;border-color:#332f2e;color:#fff}
+.stats.vnav .stat.on .label{color:#d8d0cd}
+.card.section h2{font-size:17px!important;font-weight:750;display:flex;align-items:center;gap:2px;white-space:nowrap;margin:0}
+.info-i{border:0;background:none;color:#857c79;font-size:15px;line-height:1;padding:2px 5px;cursor:pointer;border-radius:50%}
+.info-i:hover{color:#9b6b72;background:#f5ebed}
+.toolbar{row-gap:8px}
+.sch-toolbar,.stock-bar{flex-wrap:wrap!important}
+.stock-bar h2,.sch-toolbar h2{font-size:17px!important;padding-top:0!important}
+.daily-memo-box label{font-size:12px}
+/* 최근 투약 기록 표 */
+.hist-wrap{margin-top:12px;max-height:340px}
+.hist-table{width:100%;min-width:0!important;table-layout:auto}
+.hist-wrap th,.hist-wrap td{padding:5px 2px!important;font-size:10.5px!important;white-space:nowrap;text-align:center}
+.hist-wrap td:nth-child(7){max-width:46px;overflow:hidden;text-overflow:ellipsis}
+.hist-wrap td .btn,.hist-wrap td button{padding:2px 6px!important;font-size:10px!important}
+/* 처방기록 표 */
+.sh-table th,.sh-table td{text-align:center!important;white-space:nowrap;font-size:12px!important;padding:8px 5px!important}
+.sh-table td .btn{padding:3px 8px;font-size:11px}
+/* 키보드 대응 */
+.modal-bg{height:var(--vvh,100%);bottom:auto!important;top:var(--vvt,0px)!important}
+.modal{max-height:none}
+.disclaimer{display:none}
 </style>
 <div class="app">
 
@@ -897,16 +937,16 @@ h2{font-size:17px;font-weight:750}
 <div class="progress"><i id="bar"></i></div>
 </div>
 
-<div class="stats">
-<div class="stat"><div class="label">오늘 투약</div><div class="value" id="total">0건</div></div>
-<div class="stat"><div class="label">오늘 완료</div><div class="value" id="done">0건</div></div>
-<div class="stat"><div class="label">오늘 완료율</div><div class="value" id="rate">0%</div></div>
-<div class="stat"><div class="label">재고 부족</div><div class="value" id="low">0개</div></div>
+<div class="stats vnav">
+<button type="button" class="stat vb on" data-v="today" onclick="MED.view('today')"><div class="label">오늘 투약</div><div class="value" id="total">0건 / 0건</div></button>
+<button type="button" class="stat vb" data-v="stock" onclick="MED.view('stock')">남은 약 보기</button>
+<button type="button" class="stat vb" data-v="info" onclick="MED.view('info')">약 정보</button>
+<button type="button" class="stat vb" data-v="hist" onclick="MED.view('hist')">투약 기록</button>
 </div>
 
-<div class="card section">
+<div class="card section" data-view="today">
 <div class="toolbar sch-toolbar">
-  <h2>오늘의 투약 일정</h2>
+  <h2>오늘의 투약 일정 <button class="info-i" type="button" aria-label="설명 보기" onclick="MED.info('today')">ⓘ</button></h2>
   <div class="actions">
     <button class="btn btn-sm" onclick="MED.toggleSelectAllDoses()">전체 선택/해제</button>
     <button class="btn btn-sm danger" onclick="MED.deleteAllSchedules()">전체 삭제</button>
@@ -916,9 +956,9 @@ h2{font-size:17px;font-weight:750}
 
 <!-- 날짜별 특이사항 메모 박스 -->
 <div class="daily-memo-box">
-  <label for="dailyMemoInput">메모</label>
+  <label for="dailyMemoInput">증상 메모</label>
   <div class="daily-memo-flex">
-    <textarea id="dailyMemoInput" placeholder="예: 병원 방문일, 초음파 결과, 부작용, 주사 부위(왼쪽/오른쪽) 등 메모"></textarea>
+    <textarea id="dailyMemoInput" placeholder="예 : 투약 후 이상증세, 부작용 등 특이사항 메모"></textarea>
     <button class="btn btn-sm primary memo-save" onclick="MED.saveDailyMemo()">저장</button>
   </div>
 </div>
@@ -927,10 +967,9 @@ h2{font-size:17px;font-weight:750}
 </div>
 
 <!-- 모바일 최적화 약 재고 한눈에 보기 표 -->
-<div class="card section">
+<div class="card section" data-view="stock" hidden>
 <div class="toolbar">
-  <h2>남은 약 한눈에 보기</h2>
-  <span class="muted">투약 체크 시 남은 재고가 자동 반영됩니다.</span>
+  <h2>남은 약 한눈에 보기 <button class="info-i" type="button" aria-label="설명 보기" onclick="MED.info('stock')">ⓘ</button></h2>
 </div>
 <div class="table" style="margin-top:10px">
   <table class="stock-summary-table">
@@ -947,9 +986,9 @@ h2{font-size:17px;font-weight:750}
 </div>
 </div>
 
-<div class="card section">
+<div class="card section" data-view="info" hidden>
 <div class="toolbar stock-bar">
-  <h2>약품 상세 정보</h2>
+  <h2>약품 상세 정보 <button class="info-i" type="button" aria-label="설명 보기" onclick="MED.info('info')">ⓘ</button></h2>
   <div class="actions">
     <button class="btn btn-sm danger" onclick="MED.resetStockCards()">전체 삭제</button>
     <button class="btn btn-sm primary" onclick="MED.openMed()">＋ 신규 등록</button>
@@ -959,27 +998,19 @@ h2{font-size:17px;font-weight:750}
 <div id="stockGrid" class="stock-grid"></div>
 </div>
 
-<div class="card section">
+<div class="card section" data-view="hist" hidden>
 <div class="toolbar">
-  <h2>최근 투약 기록</h2>
+  <h2>최근 투약 기록 <button class="info-i" type="button" aria-label="설명 보기" onclick="MED.info('hist')">ⓘ</button></h2>
   <button class="btn btn-sm danger" onclick="MED.resetHistory()">전체 삭제</button>
 </div>
 <div class="table hist-wrap">
-  <table style="min-width:650px;">
+  <table class="hist-table">
     <thead><tr><th>날짜</th><th>약품명</th><th>투약수량</th><th>시간</th><th>상태</th><th>재고</th><th>메모</th><th></th></tr></thead>
     <tbody id="history"></tbody>
   </table>
 </div>
 </div>
 
-<div class="card section tip">
-<b>사용 방법</b><br>
-① <b>약 세부 정보 기록:</b> 약 이름, 용량, 형태, 용법, 단위, 현 재고, 1회 차감 수량, 메모를 상세하게 관리할 수 있습니다.<br>
-② <b>처방기록 확인:</b> 표 또는 카드의 [기록] 버튼을 클릭하면 날짜별 약 입고 이력을 확인할 수 있습니다.<br>
-③ <b>오늘의 투약 관리:</b> [전체 선택/해제] 버튼으로 전체 체크가 가능하며, 항목을 드래그해서 위치를 자유롭게 변경할 수 있습니다.<br>
-<br>
-※ 이 페이지는 개인 투약 기록용입니다. 정확한 용법과 스케줄은 담당 의료진 지시에 따르세요.
-</div>
 </div>
 
 <!-- 되돌리기(복구 지점) 모달 -->
@@ -1022,11 +1053,11 @@ h2{font-size:17px;font-weight:750}
 <!-- 처방기록 조회 모달 -->
 <div id="stockHistoryBg" class="modal-bg" onclick="if(event.target===this)MED.closeStockHistoryModal()"><div class="modal" style="max-width:550px;">
 <div class="modalhead"><h2 id="stockHistoryTitle">날짜별 처방기록</h2><button class="close" onclick="MED.closeStockHistoryModal()">×</button></div>
-<div style="margin-top:15px;" class="table">
+<div style="margin-top:15px;" class="table sh-table">
   <table>
     <thead>
       <tr>
-        <th>처방/타온 날짜</th>
+        <th>처방일</th>
         <th>약 이름</th>
         <th>수량</th>
         <th>구분</th>
@@ -1569,7 +1600,7 @@ function renderDashboard(){
   document.getElementById('dCycles').textContent=db.cycles.length+'회';
   renderDashSub();
   const s=embStats();
-  document.getElementById('embStatus').innerHTML=`<h2>배아 보관 현황</h2><div class="kpis"><div class="kpi"><div class="stat-label">최종 동결 배아</div><strong>${s.total}개</strong></div><div class="kpi"><div class="stat-label">이식 배아 누계</div><strong>${s.usedN}개</strong></div><div class="kpi"><div class="stat-label">폐기</div><strong>${s.disc}개</strong></div><div class="kpi" style="background:var(--soft)"><div class="stat-label">보관 중 (자동 계산)</div><strong style="color:var(--accent)">${s.stored}개</strong></div></div><div class="progress"><i style="width:${s.total?s.stored/s.total*100:0}%"></i></div><div>${Object.entries(s.res).map(([k,v])=>`<span class="badge ${k==='PGT 정상'?'green':''}" style="margin-right:6px">${esc(k)} ${v}개</span>`).join('')||'<span class="muted">보관 중인 배아가 없습니다.</span>'}</div>`;
+  document.getElementById('embStatus').innerHTML=`<h2>배아 보관 현황 <button class="info-btn" type="button" aria-haspopup="dialog" aria-label="배아 보관 현황 설명 보기" data-info="자세한 배아 채취/보관 현황은 이식주기 메뉴에서 확인하세요.">ⓘ</button></h2><div class="kpis"><div class="kpi"><div class="stat-label">최종 동결 배아</div><strong>${s.total}개</strong></div><div class="kpi"><div class="stat-label">이식 배아 누계</div><strong>${s.usedN}개</strong></div><div class="kpi"><div class="stat-label">폐기</div><strong>${s.disc}개</strong></div><div class="kpi" style="background:var(--soft)"><div class="stat-label">보관 중 (자동 계산)</div><strong style="color:var(--accent)">${s.stored}개</strong></div></div><div class="progress"><i style="width:${s.total?s.stored/s.total*100:0}%"></i></div><div>${Object.entries(s.res).map(([k,v])=>`<span class="badge ${k==='PGT 정상'?'green':''}" style="margin-right:6px">${esc(k)} ${v}개</span>`).join('')||'<span class="muted">보관 중인 배아가 없습니다.</span>'}</div>`;
   const by={'진료비':0,'약제비':0,'기타':0};let gross=0;
   [...db.cycles,...db.transfers,...db.labs].forEach(r=>(r.costs||[]).forEach(c=>{const a=+c.amount||0;by[c.type]=(by[c.type]||0)+a;gross+=a}));
   const sub=[...db.cycles,...db.transfers].reduce((n,r)=>n+subsidyTotal(r),0), net=gross;
@@ -2177,7 +2208,19 @@ function cardChips(k){
   const key=isC?(c=>c.retrieval||c.stim||c.start||''):(t=>t.date||t.tstart||t.mstart||'');
   l.sort((a,b)=>key(b.v).localeCompare(key(a.v))||b.i-a.i);
   return `<div class="pick-chips"><button type="button" class="pick-chip ${selCard[k]==='all'?'on':''}" onclick="pickCard('${k}','all')">전체</button>${l.map(({v})=>`<button type="button" class="pick-chip ${selCard[k]===v.id?'on':''}" onclick="pickCard('${k}','${v.id}')">${esc(v.name)}</button>`).join('')}</div>`}
-function pickCard(k,id){selCard[k]=id;if(k==='cycle')renderCycles();else renderTransfers()}
+function pickCard(k,id){
+  const box=document.getElementById(k==='cycle'?'cycleList':'transferList');
+  const o=box&&box.querySelector('.pick-chips'),sl=o?o.scrollLeft:0;
+  selCard[k]=id;if(k==='cycle')renderCycles();else renderTransfers();
+  const nc=box&&box.querySelector('.pick-chips');
+  if(nc){
+    nc.scrollLeft=sl;
+    const on=nc.querySelector('.pick-chip.on');
+    if(on){const cr=nc.getBoundingClientRect(),or=on.getBoundingClientRect();
+      if(or.right>cr.right-10)nc.scrollLeft+=or.right-cr.right+14;
+      else if(or.left<cr.left+10)nc.scrollLeft-=cr.left-or.left+14}
+  }
+}
 function renderCycles(){
   const el=document.getElementById('cycleList');
   if(!db.cycles.length){el.innerHTML='<div class="empty">등록된 채취주기가 없습니다.</div>';return}
@@ -2602,6 +2645,12 @@ renderAll();
     last=btn; m.classList.add('show'); m.setAttribute('aria-hidden','false');
     m.querySelector('.close').focus({preventScroll:true});
   };
+  window.openInfoText=function(title,text){
+    document.getElementById('infoTitle').textContent=title;
+    document.getElementById('infoText').textContent=text;
+    last=null;m.classList.add('show');m.setAttribute('aria-hidden','false');
+    m.querySelector('.close').focus({preventScroll:true});
+  };
   window.closeInfo=function(){
     m.classList.remove('show'); m.setAttribute('aria-hidden','true');
     if(last){last.focus({preventScroll:true});last=null}
@@ -2621,7 +2670,7 @@ renderAll();
 const tpl=document.getElementById("medTpl");
 document.getElementById("medHost").attachShadow({mode:"open"}).appendChild(tpl.content.cloneNode(true));
 const R=document.getElementById("medHost").shadowRoot;
-const date=R.getElementById("date"),total=R.getElementById("total"),rate=R.getElementById("rate"),bar=R.getElementById("bar"),low=R.getElementById("low"),medName=R.getElementById("medName"),medDose=R.getElementById("medDose"),medType=R.getElementById("medType"),medUsage=R.getElementById("medUsage"),unit=R.getElementById("unit"),stock=R.getElementById("stock"),useQty=R.getElementById("useQty"),medMemo=R.getElementById("medMemo"),schMed=R.getElementById("schMed"),schType=R.getElementById("schType"),schDose=R.getElementById("schDose"),schTime=R.getElementById("schTime"),schPeriod=R.getElementById("schPeriod"),schStart=R.getElementById("schStart"),schEnd=R.getElementById("schEnd"),schRepeat=R.getElementById("schRepeat"),schMemo=R.getElementById("schMemo");
+const date=R.getElementById("date"),total=R.getElementById("total"),bar=R.getElementById("bar"),medName=R.getElementById("medName"),medDose=R.getElementById("medDose"),medType=R.getElementById("medType"),medUsage=R.getElementById("medUsage"),unit=R.getElementById("unit"),stock=R.getElementById("stock"),useQty=R.getElementById("useQty"),medMemo=R.getElementById("medMemo"),schMed=R.getElementById("schMed"),schType=R.getElementById("schType"),schDose=R.getElementById("schDose"),schTime=R.getElementById("schTime"),schPeriod=R.getElementById("schPeriod"),schStart=R.getElementById("schStart"),schEnd=R.getElementById("schEnd"),schRepeat=R.getElementById("schRepeat"),schMemo=R.getElementById("schMemo");
 
 const KEY="ivf_med_inventory_v14";
 
@@ -2683,9 +2732,7 @@ function fmt(n){return Number(n||0).toLocaleString("ko-KR",{maximumFractionDigit
 function render(){
  date.value=d;
  const ss=db.schedules.filter(active), done=ss.filter(s=>log(s.id)?.done).length;
- total.textContent=ss.length+"건";R.getElementById("done").textContent=done+"건";
- rate.textContent=(ss.length?Math.round(done/ss.length*100):0)+"%";bar.style.width=(ss.length?done/ss.length*100:0)+"%";
- const lows=db.meds.filter(m=>Number(m.stock)<=0||Number(m.stock)<=Number(m.useQty||1)).length;low.textContent=lows+"개";
+ total.textContent=done+"건 / "+ss.length+"건";bar.style.width=(ss.length?done/ss.length*100:0)+"%";
  
  R.getElementById("dailyMemoInput").value = db.dailyMemos[d] || "";
 
@@ -3167,12 +3214,26 @@ function undo(sid,date){
  save();render();
 }
 
+
+let curView="today";
+function view(v){
+ curView=v||"today";
+ R.querySelectorAll("[data-view]").forEach(e=>{e.hidden=e.getAttribute("data-view")!==curView});
+ R.querySelectorAll(".vb").forEach(b=>b.classList.toggle("on",b.dataset.v===curView));
+}
+const INFOTXT={
+ today:["오늘의 투약 일정","오늘 복용할 약을 체크하면 남은 재고가 자동으로 줄어요. [전체 선택/해제] 버튼으로 한 번에 체크할 수 있고, ☰를 누른 채 끌어서 순서를 바꿀 수 있어요. 증상 메모에는 그날의 이상증세나 부작용 등을 적어 두세요.\n\n※ 개인 투약 기록용이에요. 정확한 용법과 스케줄은 담당 의료진의 지시에 따르세요."],
+ stock:["남은 약 한눈에 보기","약 이름, 용량, 현재 재고를 한눈에 확인해요. 투약을 체크하면 남은 재고가 자동으로 반영되고, [기록] 버튼을 누르면 날짜별 처방(입고) 기록을 볼 수 있어요."],
+ info:["약품 상세 정보","약 이름, 용량, 형태, 용법, 단위, 현 재고, 1회 차감 수량, 메모를 자세히 관리해요. [처방 약 추가]로 새로 받은 약 수량을 더하고, [처방기록]으로 날짜별 입고 이력을 확인할 수 있어요."],
+ hist:["최근 투약 기록","완료한 투약이 최근 순으로 쌓여요. 잘못 체크했다면 [취소]를 눌러 되돌릴 수 있고, 재고도 함께 복구돼요."]
+};
+function info(k){const t=INFOTXT[k];if(t&&window.openInfoText)window.openInfoText(t[0],t[1])}
 function changeDate(){d=date.value;render()}
 function moveDate(n){let x=new Date(d+"T12:00:00");x.setDate(x.getDate()+n);d=localDate(x);render()}
 function today(){d=localDate();render()}
 
 R.getElementById("schMed").addEventListener("change",syncScheduleMed);
-snap("자동 보관");
+snap("자동 보관");view("today");
 render();
 
 /* ---- 클라우드 동기화 연결 ---- */
@@ -3252,7 +3313,7 @@ window.medApplyCloud=function(json){
  window.addEventListener("touchcancel",end,true);
 })();
 
-window.MED={resetAllData,openSchedule,moveDate,changeDate,today,toggleSelectAllDoses,resetTodayDose,deleteAllSchedules,saveDailyMemo,resetStockCards,openMed,resetHistory,closeMed,saveMed,closeAddStockModal,saveAddStock,closeStockHistoryModal,closeSchedule,saveSchedule,showStockHistory,addStock,addStockRow,deleteMed,openBak,closeBak,restoreBak,restoreCloudBak,toggleDose,deleteSchedule,handleDragStart,handleDragOver,handleDragLeave,handleDrop,handleDragEnd,deleteStockTx,undo};
+window.MED={view,info,resetAllData,openSchedule,moveDate,changeDate,today,toggleSelectAllDoses,resetTodayDose,deleteAllSchedules,saveDailyMemo,resetStockCards,openMed,resetHistory,closeMed,saveMed,closeAddStockModal,saveAddStock,closeStockHistoryModal,closeSchedule,saveSchedule,showStockHistory,addStock,addStockRow,deleteMed,openBak,closeBak,restoreBak,restoreCloudBak,toggleDose,deleteSchedule,handleDragStart,handleDragOver,handleDragLeave,handleDrop,handleDragEnd,deleteStockTx,undo};
 })();
 </script>
 
@@ -3470,6 +3531,21 @@ var BN=(function(){
     el.dataset.s=s;el.title=t.trim();el.setAttribute('aria-label','동기화 상태: '+t.trim());
   }
   new MutationObserver(st).observe(el,{childList:true,characterData:true,subtree:true});st();
+})();
+
+
+// ===== 키보드 대응 =====
+(function(){
+  const vv=window.visualViewport,r=document.documentElement;
+  function set(){r.style.setProperty('--vvh',(vv?vv.height:window.innerHeight)+'px');r.style.setProperty('--vvt',(vv?vv.offsetTop:0)+'px')}
+  if(vv){vv.addEventListener('resize',set);vv.addEventListener('scroll',set)}
+  window.addEventListener('resize',set);set();
+  document.addEventListener('focusin',e=>{
+    const p=e.composedPath(),t=p[0];
+    if(!t||!/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))return;
+    if(!p.some(el=>el.classList&&(el.classList.contains('modal')||el.classList.contains('modal-bg')||el.classList.contains('info-modal'))))return;
+    setTimeout(()=>{try{t.scrollIntoView({block:'center',behavior:'smooth'})}catch(_){}},350);
+  });
 })();
 
 // ===== 맨 위로 버튼 + 좌우 스와이프 탭 이동 =====
