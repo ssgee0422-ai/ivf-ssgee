@@ -604,7 +604,7 @@ body{overscroll-behavior-x:none}
       </div>
     </section>
   </main>
-  <div class="footer">기록은 부부 두 분만 접근할 수 있는 클라우드(Firebase)에 저장되고 자동으로 함께 동기화됩니다.<br><span id="whoami"></span> <button class="btn" type="button" onclick="window.cloudLogout&&window.cloudLogout()" style="margin-left:6px">로그아웃</button></div>
+  <div class="footer">기록은 부부 두 분만 접근할 수 있는 클라우드(Firebase)에 저장되고 자동으로 함께 동기화됩니다.<br><span id="whoami"></span> <button class="btn" type="button" onclick="window.cloudLogout&&window.cloudLogout()" style="margin-left:6px;padding:1px 7px;font-size:9px;font-weight:500;line-height:1.5;min-height:0">로그아웃</button></div>
 <div class="qa-dim" id="qaDim" onclick="BN.close()"></div>
 <div class="qa-sheet" id="qaAdd"><div class="qa-g">
 <button class="qa-o" type="button" onclick="BN.pick(this,'cycle')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C8 2 4.5 9 4.5 14a7.5 7.5 0 0 0 15 0C19.5 9 16 2 12 2z"/></svg><span>채취 기록</span></button>
@@ -945,7 +945,8 @@ h2{font-size:17px;font-weight:750}
 .disclaimer{display:none}
 
 /* ===== 칩 고정 / 표 헤더 고정 ===== */
-.stats.vnav{position:sticky;top:0;z-index:30;background:#faf8f7;padding:6px 0 8px!important;margin:0 0 4px!important}
+.datebar .nb{width:36px;height:36px;padding:0!important;border-radius:50%!important;display:inline-grid;place-items:center;background:#f8efed!important;border-color:#eddcd9!important;color:#9a6670;box-shadow:none!important}.datebar .nb:active{background:#efdcd9!important}
+.stats.vnav{position:sticky;top:0;z-index:6;background:#faf8f7;padding:6px 0 8px!important;margin:0 0 4px!important}
 .ss-wrap{overflow:visible!important}
 .stock-summary-table th{position:sticky;top:var(--chipH,66px);z-index:5;background:#faf7f6;box-shadow:0 1px 0 #eee6e2}
 .hist-wrap th,.hist-wrap td{padding:6px 4px!important;font-size:11.5px!important}
@@ -955,7 +956,7 @@ h2{font-size:17px;font-weight:750}
 <div class="card datecard">
 <div class="toolbar">
 <div class="datebar">
-<button class="btn" onclick="MED.moveDate(-1)">‹</button><input id="date" type="date" onchange="MED.changeDate()"><button class="btn" onclick="MED.moveDate(1)">›</button><button class="btn" onclick="MED.today()">오늘</button>
+<button class="btn nb" aria-label="이전 날" onclick="MED.moveDate(-1)"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><input id="date" type="date" onchange="MED.changeDate()"><button class="btn nb" aria-label="다음 날" onclick="MED.moveDate(1)"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button><button class="btn" onclick="MED.today()">오늘</button>
 </div>
 <button class="btn btn-sm" title="자동 보관된 기록으로 되돌리기" onclick="MED.openBak()">↩ 복구</button>
 </div>
@@ -964,8 +965,8 @@ h2{font-size:17px;font-weight:750}
 
 <div class="stats vnav">
 <button type="button" class="stat vb on" data-v="today" onclick="MED.view('today')"><div class="label">오늘 투약</div><div class="value" id="total">0건 / 0건</div></button>
-<button type="button" class="stat vb" data-v="stock" onclick="MED.view('stock')">재고현황</button>
 <button type="button" class="stat vb" data-v="info" onclick="MED.view('info')">약품정보</button>
+<button type="button" class="stat vb" data-v="stock" onclick="MED.view('stock')">재고현황</button>
 <button type="button" class="stat vb" data-v="hist" onclick="MED.view('hist')">투약기록</button>
 </div>
 
@@ -1628,7 +1629,7 @@ function renderDashboard(){
   document.getElementById('embStatus').innerHTML=`<h2>배아 보관 현황 <button class="info-btn" type="button" aria-haspopup="dialog" aria-label="배아 보관 현황 설명 보기" data-info="자세한 배아 채취/보관 현황은 이식주기 메뉴에서 확인하세요.">ⓘ</button></h2><div class="kpis"><div class="kpi"><div class="stat-label">최종 동결 배아</div><strong>${s.total}개</strong></div><div class="kpi"><div class="stat-label">이식 배아 누계</div><strong>${s.usedN}개</strong></div><div class="kpi"><div class="stat-label">폐기</div><strong>${s.disc}개</strong></div><div class="kpi" style="background:var(--soft)"><div class="stat-label">보관 중 (자동 계산)</div><strong style="color:var(--accent)">${s.stored}개</strong></div></div><div class="progress"><i style="width:${s.total?s.stored/s.total*100:0}%"></i></div><div>${Object.entries(s.res).map(([k,v])=>`<span class="badge ${k==='PGT 정상'?'green':''}" style="margin-right:6px">${esc(k)} ${v}개</span>`).join('')||'<span class="muted">보관 중인 배아가 없습니다.</span>'}</div>`;
   const by={'진료비':0,'약제비':0,'기타':0};let gross=0;
   [...db.cycles,...db.transfers,...db.labs].forEach(r=>(r.costs||[]).forEach(c=>{const a=+c.amount||0;by[c.type]=(by[c.type]||0)+a;gross+=a}));
-  const sub=[...db.cycles,...db.transfers].reduce((n,r)=>n+subsidyTotal(r),0), net=gross;
+  const sub=[...db.cycles,...db.transfers].reduce((n,r)=>n+subsidyTotal(r),0)+subManualTotal(), net=gross;
   document.getElementById('costCard').innerHTML=`<h2>총 지출비용</h2><div class="stat" style="color:var(--green)">${fmtMoney(net)}원</div><div class="muted">입력한 비용 합계(진료비는 정부지원금 정산 후 금액)</div><div class="cost-break">${Object.entries(by).map(([k,v])=>`<div><span>${k}</span><b>${fmtMoney(v)}원</b></div>`).join('')}${sub?`<div style="border-top:1px dashed var(--line);margin-top:4px;padding-top:4px"><span>정부지원금</span><b style="color:var(--blue)">${fmtMoney(sub)}원</b></div>`:''}</div>`;
   const tp=getAllMergedTimeline().slice(0,5);
   document.getElementById('recentEvents').innerHTML=tp.length?`<div class="timeline">${tp.map(x=>`<div class="event ${x.cls||''}"><div class="event-date">${fmt(x.date)} · <span class="badge ${x.cls||''}">${esc(x.type)}</span></div><div class="event-title">${esc(x.title)}</div><div class="event-note">${esc(x.note||'')}</div></div>`).join('')}</div>`:'<div class="empty">자동 등록된 타임라인이 없습니다.</div>';
@@ -1910,6 +1911,7 @@ function financeByYear(){
     (r.costs||[]).forEach(c=>{const t=(c.type in o)&&c.type!=='sub'?c.type:'기타';o[t]+=(+c.amount||0)});
     if(k!=='lab')o.sub+=subsidyTotal(r);
   }));
+  (db.subLog||[]).forEach(e=>{if(+e.amount>0)g(e.date?String(e.date).slice(0,4):'미입력').sub+=+e.amount});
   return Y;
 }
 const FIN0=()=>({'진료비':0,'약제비':0,'기타':0,sub:0});
@@ -1977,7 +1979,7 @@ function renderSubCounts(){
   const lc=document.getElementById('subLogCnt');if(lc)lc.textContent=l.length?`(${l.length}건)`:'';
   document.getElementById('subLog').innerHTML=l.length?l.map(e=>e.auto?
     `<div class="card memo-card"><div class="rec-head"><div><span class="memo-date">${e.date?fmt(e.date):'날짜 미입력'}</span> <span class="badge blue">${esc(e.type)}</span> <span class="badge">${e.kind==='cycle'?'채취':'이식'} · ${esc(e.src)} (자동)</span></div></div>${e.amount?`<div class="ml memo-text">지원금 ${fmtMoney(e.amount)}원</div>`:''}</div>`:
-    `<div class="card memo-card"><div class="rec-head"><div><span class="memo-date">${fmt(e.date)}</span> <span class="badge blue">${esc(e.type)}</span> <span class="badge">직접 기록</span></div><div class="rec-btns"><button class="btn sm" onclick="openSubModal('${e.id}')">수정</button><button class="btn danger sm" onclick="delSubLog('${e.id}')">삭제</button></div></div>${e.memo?`<div class="ml memo-text">${nl(e.memo)}</div>`:''}</div>`).join(''):'<div class="empty" style="margin-top:12px">지원 기록이 없습니다. 채취·이식 기록의 정부지원금 정산 내역에서 종류를 선택하면 자동으로 반영돼요.</div>';
+    `<div class="card memo-card"><div class="rec-head"><div><span class="memo-date">${fmt(e.date)}</span> <span class="badge blue">${esc(e.type)}</span> <span class="badge">직접 기록</span></div><div class="rec-btns"><button class="btn sm" onclick="openSubModal('${e.id}')">수정</button><button class="btn danger sm" onclick="delSubLog('${e.id}')">삭제</button></div></div>${e.amount?`<div class="ml memo-text">지원금 ${fmtMoney(e.amount)}원</div>`:''}${e.memo?`<div class="ml memo-text">${nl(e.memo)}</div>`:''}</div>`).join(''):'<div class="empty" style="margin-top:12px">지원 기록이 없습니다. 채취·이식 기록의 정부지원금 정산 내역에서 종류를 선택하면 자동으로 반영돼요.</div>';
 }
 function renderDashSub(){
   const el=document.getElementById('dSub');if(!el)return;
@@ -2009,15 +2011,16 @@ function openSubModal(id){
   document.getElementById('modalBody').innerHTML=`<div class="form-grid">
     <div class="field"><label>지원받은 날짜</label><input id="s_date" type="date" value="${esc(e?e.date:todayStr())}"></div>
     <div class="field"><label>시술 종류 (채취·이식 기록 외에 직접 추가할 때만 사용)</label><select id="s_type">${SUB_TYPES.map(t=>`<option ${e&&e.type===t?'selected':''}>${t}</option>`).join('')}</select></div>
+    <div class="field"><label>지원 금액 (원, 선택)</label><input id="s_amt" type="number" min="0" inputmode="numeric" placeholder="예: 500000" value="${e&&e.amount?e.amount:''}"></div>
     <div class="field full"><label>메모 (선택)</label><textarea id="s_memo" placeholder="예: 보건소 승인번호, 병원명 등">${esc(e?e.memo:'')}</textarea></div>
   </div><div class="actions"><button class="btn" onclick="closeModal()">취소</button><button class="btn primary" onclick="saveSubLog()">저장</button></div>`;
   document.getElementById('modal').classList.add('show');
 }
 function saveSubLog(){
-  const date=document.getElementById('s_date').value||todayStr(),type=document.getElementById('s_type').value,memo=document.getElementById('s_memo').value.trim();
+  const date=document.getElementById('s_date').value||todayStr(),type=document.getElementById('s_type').value,memo=document.getElementById('s_memo').value.trim(),amount=Math.max(0,parseInt(document.getElementById('s_amt').value)||0);
   db.subLog=db.subLog||[];
-  if(window._subEdit){const e=db.subLog.find(v=>v.id===window._subEdit);if(e){e.date=date;e.type=type;e.memo=memo}}
-  else db.subLog.push({id:uid(),date,type,memo,ts:Date.now()});
+  if(window._subEdit){const e=db.subLog.find(v=>v.id===window._subEdit);if(e){e.date=date;e.type=type;e.memo=memo;e.amount=amount}}
+  else db.subLog.push({id:uid(),date,type,memo,amount,ts:Date.now()});
   window._subEdit=null;closeModal();save();toast('저장했습니다.');
 }
 function delSubLog(id){if(!confirm('이 지원 기록을 삭제할까요?'))return;db.subLog=(db.subLog||[]).filter(v=>v.id!==id);save();toast('삭제했습니다.')}
@@ -2205,6 +2208,7 @@ function toggleSubNote(sel){const n=sel.parentElement.querySelector('.sub_n');n.
 function buildSubRows(l){return (l&&l.length?l:[{}]).map(subRow).join('')}
 function addSubRow(id){document.getElementById(id).insertAdjacentHTML('beforeend',subRow())}
 function getSubs(id){const o=[];document.querySelectorAll(`#${id} .sub-row`).forEach(r=>{const type=r.querySelector('.sub_t').value,amount=+r.querySelector('.sub_a').value||0,note=type==='기타'?r.querySelector('.sub_n').value.trim():'';if(type||amount>0||note)o.push({type,note,amount})});return o}
+function subManualTotal(){return (db.subLog||[]).reduce((n,e)=>n+(+e.amount||0),0)}
 function subsidyTotal(r){return (r.subsidies||[]).reduce((n,x)=>n+(+x.amount||0),0)}
 function subsidyHTML(x){const h=subRows(x);return h?`<div class="kvg">${h}</div>`:''}
 
