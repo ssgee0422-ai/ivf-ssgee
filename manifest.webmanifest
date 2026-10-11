@@ -1,6 +1,6 @@
 {
-  "name": "My IVF Journey",
-  "short_name": "IVF Journey",
+  "name": "My IVF Archive",
+  "short_name": "My IVF Archive",
   "description": "채취·이식 주기, 투약, 임신테스트기·초음파 기록",
   "lang": "ko",
   "start_url": "./index.html",
@@ -10,8 +10,8 @@
   "background_color": "#faf8f7",
   "theme_color": "#faf8f7",
   "icons": [
-    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ]
 }

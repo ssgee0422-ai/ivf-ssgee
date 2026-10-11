@@ -7,11 +7,11 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="IVF Journey">
+<meta name="apple-mobile-web-app-title" content="My IVF Archive">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<title>My IVF Journey</title>
+<title>My IVF Archive</title>
 <style>
 :root{
   --bg:#faf8f7; --card:#fff; --text:#332f2e; --muted:#857c79;
@@ -397,10 +397,28 @@ body{padding-bottom:env(safe-area-inset-bottom,0px)}
 .modal-box{max-height:calc(var(--vvh,100vh) - 28px)!important}
 .info-box{max-height:calc(var(--vvh,100vh) - 36px)!important}
 
+
+/* ===== ＋ 메뉴 촤르르 ===== */
+@keyframes qaPop{0%{opacity:0;transform:translateY(54px) scale(.5)}55%{opacity:1}100%{opacity:1;transform:none}}
+@keyframes qaFade{from{opacity:0}to{opacity:1}}
+#qaAdd.show .qa-o{animation:qaPop .36s cubic-bezier(.22,1.25,.36,1) both}
+#qaAdd.show .qa-o:nth-last-child(1){animation-delay:0ms}
+#qaAdd.show .qa-o:nth-last-child(2){animation-delay:45ms}
+#qaAdd.show .qa-o:nth-last-child(3){animation-delay:90ms}
+#qaAdd.show .qa-o:nth-last-child(4){animation-delay:135ms}
+#qaAdd.show .qa-o:nth-last-child(5){animation-delay:180ms}
+#qaAdd.show .qa-o:nth-last-child(6){animation-delay:225ms}
+#qaAdd.show .qa-o:nth-last-child(7){animation-delay:270ms}
+#qaAdd.show .qa-o:nth-last-child(8){animation-delay:315ms}
+#qaAdd.show .qa-o:nth-last-child(9){animation-delay:360ms}
+.qa-dim.show{animation:qaFade .22s ease}
+
 /* ===== 상단 제목줄 + 동기화 점 ===== */
 .hero{position:relative;padding:11px 22px 11px 16px!important;border-radius:16px!important;margin-bottom:10px!important}
 .hero-line{display:flex;align-items:baseline;flex-wrap:nowrap;white-space:nowrap;overflow:hidden;gap:0 6px;padding-right:12px;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .hero-line .eyebrow{font-size:9.5px;letter-spacing:.08em;color:var(--accent);font-weight:700;margin:0;flex:0 0 auto}
+.lab-search{display:flex;align-items:center;gap:8px;margin-top:14px;flex-wrap:wrap}.lab-search label{font-size:13px;font-weight:700;color:var(--ink,#444)}.lab-search input{flex:1;min-width:150px;max-width:220px}
+.hero-ico{width:1.05em;height:1.05em;stroke:currentColor;fill:none;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.12em;margin-right:.5em}
 .hero-sep{color:var(--accent2,#d9b7bd);font-size:10px}
 .hero-line .subtitle{font-size:10px;color:var(--muted);margin:0;overflow:hidden;text-overflow:ellipsis;min-width:0}
 #syncBadge{position:absolute!important;top:9px!important;right:12px!important;left:auto!important;bottom:auto!important;width:8px;height:8px;padding:0!important;border:0!important;border-radius:50%!important;font-size:0!important;line-height:0!important;overflow:hidden;background:#cfc6c3!important;box-shadow:none!important;color:transparent!important;z-index:2}
@@ -451,7 +469,7 @@ body{overscroll-behavior-x:none}
 <body>
 <div class="app">
   <header class="hero">
-    <div class="hero-line" id="heroHome" role="link" tabindex="0" aria-label="홈으로" onclick="BN.home()" onkeydown="if(event.key==='Enter')BN.home()"><span class="eyebrow">MY IVF ARCHIVE</span><span class="hero-sep">·</span><span class="subtitle">나의 시험관 여정을 차곡차곡 기록해보세요.</span></div>
+    <div class="hero-line" id="heroHome" role="link" tabindex="0" aria-label="홈으로" onclick="BN.home()" onkeydown="if(event.key==='Enter')BN.home()"><span class="eyebrow"><svg class="hero-ico" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" d="M12 3L3 11h2v9h14v-9h2z M10 20v-5h4v5z"/></svg>MY IVF ARCHIVE</span><span class="hero-sep">·</span><span class="subtitle">나의 시험관 여정을 차곡차곡 기록해보세요.</span></div>
     <div class="top-actions">
       <button class="btn primary add" onclick="openModal('cycle')">＋ 채취 기록</button>
       <button class="btn primary add" onclick="openModal('transfer')">＋ 이식 기록</button>
@@ -508,7 +526,7 @@ body{overscroll-behavior-x:none}
       <div class="cyc-sw"><button type="button" data-t="transfer" onclick="CYCSW('transfer')">이식주기</button><button type="button" data-t="cycles" onclick="CYCSW('cycles')">채취주기 &amp; 배아</button></div>
       <div class="card">
         <div class="sec-head">
-          <div><h2>이식주기 관리 <button class="info-btn" type="button" aria-haspopup="dialog" aria-label="이식주기 관리 설명 보기" data-info="채취주기 및 동결 배아 정보와 연동되어 이식 여정을 기록합니다.">ⓘ</button></h2></div>
+          <div><h2>이식주기 관리 <button class="info-btn" type="button" aria-haspopup="dialog" aria-label="이식주기 관리 설명 보기" data-info="채취주기 및 동결 배아 정보와 연동되어 이식 여정을 기록합니다. 이식 후 증상, 임신테스트기, 초음파 기록을 할 수 있습니다.">ⓘ</button></h2></div>
           <button class="btn primary add-sm" onclick="openModal('transfer')">＋ 추가</button>
         </div>
         <div id="transferList" style="margin-top:16px"></div>
@@ -518,6 +536,7 @@ body{overscroll-behavior-x:none}
     <section id="labs" class="panel">
       <div class="card">
         <div class="sec-head"><div><h2>검사/진료 기록 <button class="info-btn" type="button" aria-haspopup="dialog" aria-label="검사/진료 기록 설명 보기" data-info="주기의 중간 검사, 초음파, 혈액 수치 및 세부 비용 등을 기록합니다.">ⓘ</button></h2></div><button class="btn primary add-sm" onclick="openModal('lab')">+ 추가</button></div>
+        <div class="lab-search"><label for="labQ">날짜 검색</label><input type="date" id="labQ" oninput="renderLabs()"><button type="button" class="btn sm" onclick="document.getElementById('labQ').value='';renderLabs()">전체 보기</button></div>
         <div class="table-wrap" style="margin-top:15px"><div id="labList"></div></div>
       </div>
     </section>
@@ -608,17 +627,17 @@ body{overscroll-behavior-x:none}
 <button class="qa-o" type="button" onclick="BN.close();document.getElementById('importFile').click()"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4"/><path d="M7 8l5-5 5 5"/><path d="M5 21h14"/></svg><span>데이터 복원</span></button>
 </div>
 <nav class="bnav" aria-label="하단 메뉴"><div class="bnav-in">
-<button class="bn on" type="button" data-g="home" onclick="BN.tab('dashboard')"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>홈</button>
-<button class="bn" type="button" data-g="cyc" onclick="BN.cyc()"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M8 3v4M16 3v4M4 10h16"/></svg>주기</button>
+<button class="bn on" type="button" data-g="home" onclick="BN.tab('dashboard')"><svg viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M12 3L3 11h2v9h14v-9h2z M10 20v-5h4v5z"/></svg>홈</button>
+<button class="bn" type="button" data-g="cyc" onclick="BN.cyc()"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3"/><path fill="currentColor" d="M4 8a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v2H4z"/><path d="M8 3v4M16 3v4M4 10h16"/></svg>주기</button>
 <span class="bn-gap"></span>
-<button class="bn" type="button" data-g="med" onclick="BN.tab('medication')"><svg viewBox="0 0 24 24"><path d="M10.5 20.5a4.95 4.95 0 0 1-7-7l10-10a4.95 4.95 0 0 1 7 7z"/><path d="M8.5 8.5l7 7"/></svg>투약</button>
+<button class="bn" type="button" data-g="med" onclick="BN.tab('medication')"><svg viewBox="0 0 24 24"><path d="M10.5 20.5a4.95 4.95 0 0 1-7-7l10-10a4.95 4.95 0 0 1 7 7z"/><path fill="currentColor" d="M8.5 8.5L3.5 13.5A4.95 4.95 0 0 0 10.5 20.5L15.5 15.5z"/><path d="M8.5 8.5l7 7"/></svg>투약</button>
 <button class="bn" type="button" data-g="more" onclick="BN.more()"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="19" cy="12" r="1.4"/></svg>더보기</button>
 </div></nav>
 <button class="bn-fab" id="bnFab" type="button" aria-label="기록 추가" onclick="BN.plus()"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
 <button id="toTop" type="button" aria-label="맨 위로" title="맨 위로"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
 <div id="loginOverlay" style="position:fixed;inset:0;background:var(--bg);z-index:999;display:flex;align-items:center;justify-content:center;padding:24px">
   <div style="max-width:340px;text-align:center">
-    <div class="eyebrow">OUR IVF JOURNEY</div>
+    <div class="eyebrow">MY IVF ARCHIVE</div>
     <h1 style="font-size:26px">함께 보는 시험관 기록</h1>
     <p id="loginMsg" class="subtitle" style="margin-bottom:20px">등록된 구글 계정으로 로그인해 주세요.</p>
     <button id="loginBtn" class="btn primary" style="padding:12px 20px;font-size:14px;width:100%">Google 계정으로 로그인</button>
@@ -924,6 +943,12 @@ h2{font-size:17px;font-weight:750}
 .modal-bg{height:var(--vvh,100%);bottom:auto!important;top:var(--vvt,0px)!important}
 .modal{max-height:none}
 .disclaimer{display:none}
+
+/* ===== 칩 고정 / 표 헤더 고정 ===== */
+.stats.vnav{position:sticky;top:0;z-index:30;background:#faf8f7;padding:6px 0 8px!important;margin:0 0 4px!important}
+.ss-wrap{overflow:visible!important}
+.stock-summary-table th{position:sticky;top:var(--chipH,66px);z-index:5;background:#faf7f6;box-shadow:0 1px 0 #eee6e2}
+.hist-wrap th,.hist-wrap td{padding:6px 4px!important;font-size:11.5px!important}
 </style>
 <div class="app">
 
@@ -939,9 +964,9 @@ h2{font-size:17px;font-weight:750}
 
 <div class="stats vnav">
 <button type="button" class="stat vb on" data-v="today" onclick="MED.view('today')"><div class="label">오늘 투약</div><div class="value" id="total">0건 / 0건</div></button>
-<button type="button" class="stat vb" data-v="stock" onclick="MED.view('stock')">남은 약 보기</button>
-<button type="button" class="stat vb" data-v="info" onclick="MED.view('info')">약 정보</button>
-<button type="button" class="stat vb" data-v="hist" onclick="MED.view('hist')">투약 기록</button>
+<button type="button" class="stat vb" data-v="stock" onclick="MED.view('stock')">재고현황</button>
+<button type="button" class="stat vb" data-v="info" onclick="MED.view('info')">약품정보</button>
+<button type="button" class="stat vb" data-v="hist" onclick="MED.view('hist')">투약기록</button>
 </div>
 
 <div class="card section" data-view="today">
@@ -958,7 +983,7 @@ h2{font-size:17px;font-weight:750}
 <div class="daily-memo-box">
   <label for="dailyMemoInput">증상 메모</label>
   <div class="daily-memo-flex">
-    <textarea id="dailyMemoInput" placeholder="예 : 투약 후 이상증세, 부작용 등 특이사항 메모"></textarea>
+    <textarea id="dailyMemoInput" placeholder="예 : 투약 후 특이사항 메모"></textarea>
     <button class="btn btn-sm primary memo-save" onclick="MED.saveDailyMemo()">저장</button>
   </div>
 </div>
@@ -971,7 +996,7 @@ h2{font-size:17px;font-weight:750}
 <div class="toolbar">
   <h2>남은 약 한눈에 보기 <button class="info-i" type="button" aria-label="설명 보기" onclick="MED.info('stock')">ⓘ</button></h2>
 </div>
-<div class="table" style="margin-top:10px">
+<div class="table ss-wrap" style="margin-top:10px">
   <table class="stock-summary-table">
     <thead>
       <tr>
@@ -1005,7 +1030,7 @@ h2{font-size:17px;font-weight:750}
 </div>
 <div class="table hist-wrap">
   <table class="hist-table">
-    <thead><tr><th>날짜</th><th>약품명</th><th>투약수량</th><th>시간</th><th>상태</th><th>재고</th><th>메모</th><th></th></tr></thead>
+    <thead><tr><th>날짜</th><th>약품명</th><th>투약수량</th><th>시간</th><th>상태</th><th></th></tr></thead>
     <tbody id="history"></tbody>
   </table>
 </div>
@@ -1045,7 +1070,7 @@ h2{font-size:17px;font-weight:750}
 <form onsubmit="MED.saveAddStock(event)">
 <div class="form" style="grid-template-columns:1fr;">
 <div class="field"><label>처방 날짜</label><input id="addStockDate" type="date" required></div>
-<div class="field"><div class="as-head"><span>약 종류(선택)</span><span>수량</span></div><div id="addStockRows"></div><button type="button" class="btn btn-sm as-plus" title="약 추가" onclick="MED.addStockRow()">＋</button></div>
+<div class="field"><div class="as-head"><span>약 종류(선택)</span><span>수량</span></div><div id="addStockRows"></div><button type="button" class="btn btn-sm as-plus" title="약 추가" onclick="MED.addStockRow()">＋ 추가</button></div>
 </div>
 <div class="foot"><button type="button" class="btn" onclick="MED.closeAddStockModal()">취소</button><button class="btn primary">저장</button></div>
 </form></div></div>
@@ -1728,10 +1753,13 @@ function renderTransfers(){
 function renderLabs(){
   const el = document.getElementById('labList');
   if(!db.labs.length){ el.innerHTML = '<div class="empty">검사 기록이 없습니다.</div>'; return; }
+  const q=(document.getElementById('labQ')||{}).value||'';
+  const rows=db.labs.filter(x=>!q||(x.date||'')===q);
+  if(!rows.length){ el.innerHTML = '<div class="empty">'+q.replace(/-/g,'.')+' 날짜의 검사/진료 기록이 없습니다.</div>'; return; }
 
   el.innerHTML = `<table class="stack lab-stack">
     <thead><tr><th>날짜</th><th>연동 주기</th><th>검사 종류</th><th>주치의</th><th>검사 수치</th><th>내막</th><th>초음파/소견</th><th>비용</th><th></th></tr></thead>
-    <tbody>${db.labs.slice().sort((a,b)=>(b.date||'').localeCompare(a.date||'')).map(x => {
+    <tbody>${rows.slice().sort((a,b)=>(b.date||'').localeCompare(a.date||'')).map(x => {
       const cycle = db.cycles.find(c=>c.id===x.cycle_id);
       const transfer = db.transfers.find(t=>t.id===x.transfer_id);
 
@@ -2734,7 +2762,7 @@ function render(){
  const ss=db.schedules.filter(active), done=ss.filter(s=>log(s.id)?.done).length;
  total.textContent=done+"건 / "+ss.length+"건";bar.style.width=(ss.length?done/ss.length*100:0)+"%";
  
- R.getElementById("dailyMemoInput").value = db.dailyMemos[d] || "";
+ R.getElementById("dailyMemoInput").value = db.dailyMemos[d] || "";chipH();
 
  renderSchedules();
  renderStockTable();
@@ -3201,10 +3229,10 @@ function saveSchedule(e){
 
 function renderHistory(){
  let hs=db.logs.filter(x=>x.done).sort((a,b)=>(b.date+b.at).localeCompare(a.date+a.at)).slice(0,40),body=R.getElementById("history");
- if(!hs.length){body.innerHTML='<tr><td colspan="8" class="empty">아직 완료된 투약 기록이 없습니다.</td></tr>';return}
+ if(!hs.length){body.innerHTML='<tr><td colspan="6" class="empty">아직 완료된 투약 기록이 없습니다.</td></tr>';return}
  body.innerHTML=hs.map(x=>{let s=db.schedules.find(y=>y.id===x.schId),m=s&&med(s.medId);if(!s||!m)return "";
  let useQtyText = m ? `${fmt(m.useQty||1)}${m.unit||'개'}` : "-";
- return `<tr><td>${x.date}</td><td><b>${esc(m.name)}</b></td><td>1회 ${esc(useQtyText)}</td><td>${esc(s.time||s.period||"-")}</td><td>완료</td><td>${fmt(m.stock)}${esc(m.unit||'개')}</td><td>${esc(s.memo||"")}</td><td><button class="btn btn-sm" onclick="MED.undo('${s.id}','${x.date}')">취소</button></td></tr>`}).join("");
+ return `<tr><td>${x.date}</td><td><b>${esc(m.name)}</b></td><td>1회 ${esc(useQtyText)}</td><td>${esc(s.time||s.period||"-")}</td><td>완료</td><td><button class="btn btn-sm" onclick="MED.undo('${s.id}','${x.date}')">취소</button></td></tr>`}).join("");
 }
 function undo(sid,date){
  let i=db.logs.findIndex(x=>x.schId===sid&&x.date===date),s=db.schedules.find(x=>x.id===sid),m=s&&med(s.medId);
@@ -3216,8 +3244,9 @@ function undo(sid,date){
 
 
 let curView="today";
+function chipH(){const e=R.querySelector('.stats.vnav');if(e&&e.offsetHeight)R.host.style.setProperty('--chipH',e.offsetHeight+'px')}
 function view(v){
- curView=v||"today";
+ curView=v||"today";setTimeout(chipH,0);
  R.querySelectorAll("[data-view]").forEach(e=>{e.hidden=e.getAttribute("data-view")!==curView});
  R.querySelectorAll(".vb").forEach(b=>b.classList.toggle("on",b.dataset.v===curView));
 }
