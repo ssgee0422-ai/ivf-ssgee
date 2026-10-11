@@ -378,6 +378,38 @@ body{padding-bottom:env(safe-area-inset-bottom,0px)}
 #toTop.show{opacity:1;pointer-events:auto;transform:none}
 #toTop:active{transform:scale(.92)}
 #toTop svg{width:22px;height:22px}
+
+/* ===== 하단 바 내비게이션 ===== */
+.tabs,.top-actions{display:none!important}
+.app{padding-bottom:calc(112px + env(safe-area-inset-bottom,0px))!important}
+.bnav{position:fixed;left:0;right:0;bottom:0;z-index:27;background:#fff;border-top:1px solid var(--line);padding:7px 8px calc(7px + env(safe-area-inset-bottom,0px));display:flex;justify-content:center;box-shadow:0 -4px 16px rgba(75,50,45,.06)}
+.bnav-in{width:100%;max-width:560px;display:flex;align-items:flex-start;justify-content:space-around}
+.bn{flex:1;max-width:84px;border:0;background:none;color:#a89f9c;font-size:10.5px;font-weight:600;padding:4px 0 2px;text-align:center;-webkit-tap-highlight-color:transparent}
+.bn svg{width:24px;height:24px;display:block;margin:0 auto 3px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.bn.on{color:var(--accent)}
+.bn-gap{flex:0 0 74px}
+.bn-fab{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);width:62px;height:62px;border-radius:50%;background:var(--accent);border:5px solid var(--bg);padding:0;display:flex;align-items:center;justify-content:center;z-index:28;box-shadow:0 4px 12px rgba(155,107,114,.4);-webkit-tap-highlight-color:transparent}
+.bn-fab svg{width:28px;height:28px;stroke:#fff;fill:none;stroke-width:2.6;stroke-linecap:round;transition:transform .2s}
+.bn-fab.open svg{transform:rotate(45deg)}
+.qa-dim{position:fixed;inset:0;background:rgba(35,28,26,.42);z-index:26;display:none}
+.qa-dim.show{display:block}
+.qa-sheet{position:fixed;left:12px;right:12px;bottom:calc(100px + env(safe-area-inset-bottom,0px));max-width:536px;margin:0 auto;background:#fff;border-radius:24px;padding:16px 14px 14px;box-shadow:0 12px 36px rgba(0,0,0,.2);z-index:29;display:none;max-height:calc(100vh - 140px);overflow:auto}
+.qa-sheet.show{display:block}
+.qa-sheet h3{font-size:14px;margin:0 4px 12px}
+.qa-g{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.qa-o{border:1px solid var(--line);border-radius:16px;padding:12px 4px 9px;text-align:center;font-size:11.5px;font-weight:700;background:#fdfbfa;color:var(--text)}
+.qa-o i{display:flex;width:40px;height:40px;border-radius:50%;margin:0 auto 6px;align-items:center;justify-content:center;font-style:normal;font-size:19px}
+.qa-o:active,.qa-m:active{background:var(--soft)}
+.qa-sheet.more{padding:8px}
+.qa-m{display:flex;align-items:center;gap:12px;width:100%;border:0;background:none;text-align:left;padding:12px;font-size:14px;font-weight:600;color:var(--text);border-bottom:1px solid #f3edea}
+.qa-m:last-child{border:0}
+.qa-m i{font-style:normal;font-size:18px;width:26px;text-align:center}
+.cyc-sw{display:flex;gap:6px;margin:0 0 12px}
+.cyc-sw button{border:1px solid var(--line);background:#fff;color:var(--text);border-radius:99px;padding:7px 14px;font-size:13px;font-weight:650}
+.cyc-sw button.on{background:#332f2e;color:#fff;border-color:#332f2e}
+#syncBadge{bottom:calc(86px + env(safe-area-inset-bottom,0px))!important;left:8px!important}
+#toTop{bottom:calc(86px + env(safe-area-inset-bottom,0px))}
+.toast{bottom:calc(96px + env(safe-area-inset-bottom,0px))}
 </style>
 </head>
 <body>
@@ -427,6 +459,7 @@ body{padding-bottom:env(safe-area-inset-bottom,0px)}
     </section>
 
     <section id="cycles" class="panel">
+      <div class="cyc-sw"><button type="button" data-t="transfer" onclick="CYCSW('transfer')">이식주기</button><button type="button" data-t="cycles" onclick="CYCSW('cycles')">채취주기 &amp; 배아</button></div>
       <div class="card">
         <div class="sec-head">
           <div><h2>채취주기 & 배아 관리 <button class="info-btn" type="button" aria-haspopup="dialog" aria-label="채취주기 &amp; 배아 관리 설명 보기" data-info="채취주기와 배아 상태를 기록합니다.">ⓘ</button></h2></div>
@@ -437,6 +470,7 @@ body{padding-bottom:env(safe-area-inset-bottom,0px)}
     </section>
 
     <section id="transfer" class="panel">
+      <div class="cyc-sw"><button type="button" data-t="transfer" onclick="CYCSW('transfer')">이식주기</button><button type="button" data-t="cycles" onclick="CYCSW('cycles')">채취주기 &amp; 배아</button></div>
       <div class="card">
         <div class="sec-head">
           <div><h2>이식주기 관리 <button class="info-btn" type="button" aria-haspopup="dialog" aria-label="이식주기 관리 설명 보기" data-info="채취주기 및 동결 배아 정보와 연동되어 이식 여정을 기록합니다.">ⓘ</button></h2></div>
@@ -517,6 +551,37 @@ body{padding-bottom:env(safe-area-inset-bottom,0px)}
     </section>
   </main>
   <div class="footer">기록은 부부 두 분만 접근할 수 있는 클라우드(Firebase)에 저장되고 자동으로 함께 동기화됩니다.<br><span id="whoami"></span> <button class="btn" type="button" onclick="window.cloudLogout&&window.cloudLogout()" style="margin-left:6px">로그아웃</button></div>
+<div class="qa-dim" id="qaDim" onclick="BN.close()"></div>
+<div class="qa-sheet" id="qaAdd"><h3>어떤 기록을 남길까요?</h3><div class="qa-g">
+<button class="qa-o" type="button" onclick="BN.add('cycle')"><i style="background:#f5ebed">🥚</i>채취 기록</button>
+<button class="qa-o" type="button" onclick="BN.add('transfer')"><i style="background:#f5ebed">🌱</i>이식 기록</button>
+<button class="qa-o" type="button" onclick="BN.add('lab')"><i style="background:#e8eef5">🩺</i>검사/진료</button>
+<button class="qa-o" type="button" onclick="BN.add('med')"><i style="background:#f1ece0">💊</i>투약 일정</button>
+<button class="qa-o" type="button" onclick="BN.add('diet')"><i style="background:#e6efe9">🥗</i>식단</button>
+<button class="qa-o" type="button" onclick="BN.add('exercise')"><i style="background:#e6efe9">🏃</i>운동</button>
+<button class="qa-o" type="button" onclick="BN.add('supp')"><i style="background:#f1ece0">🌿</i>영양제</button>
+<button class="qa-o" type="button" onclick="BN.add('sub')"><i style="background:#e8eef5">🧾</i>정부지원금</button>
+<button class="qa-o" type="button" onclick="BN.add('memo')"><i style="background:#f5ebed">📝</i>메모</button>
+</div></div>
+<div class="qa-sheet more" id="qaMore">
+<button class="qa-m" type="button" onclick="BN.go('labs')"><i>🔬</i>검사/진료 기록</button>
+<button class="qa-m" type="button" onclick="BN.go('supp')"><i>🌿</i>영양제 기록</button>
+<button class="qa-m" type="button" onclick="BN.go('diet')"><i>🥗</i>식단 기록</button>
+<button class="qa-m" type="button" onclick="BN.go('exercise')"><i>🏃</i>운동 기록</button>
+<button class="qa-m" type="button" onclick="BN.go('finance')"><i>🧾</i>비용 &amp; 지원</button>
+<button class="qa-m" type="button" onclick="BN.go('timeline')"><i>🕘</i>통합 타임라인</button>
+<button class="qa-m" type="button" onclick="BN.go('questions')"><i>❓</i>질문 &amp; 메모</button>
+<button class="qa-m" type="button" onclick="BN.close();exportData()"><i>💾</i>데이터 백업</button>
+<button class="qa-m" type="button" onclick="BN.close();document.getElementById('importFile').click()"><i>📂</i>데이터 복원</button>
+</div>
+<nav class="bnav" aria-label="하단 메뉴"><div class="bnav-in">
+<button class="bn on" type="button" data-g="home" onclick="BN.tab('dashboard')"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>홈</button>
+<button class="bn" type="button" data-g="cyc" onclick="BN.cyc()"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M8 3v4M16 3v4M4 10h16"/></svg>주기</button>
+<span class="bn-gap"></span>
+<button class="bn" type="button" data-g="med" onclick="BN.tab('medication')"><svg viewBox="0 0 24 24"><path d="M10.5 20.5a4.95 4.95 0 0 1-7-7l10-10a4.95 4.95 0 0 1 7 7z"/><path d="M8.5 8.5l7 7"/></svg>투약</button>
+<button class="bn" type="button" data-g="more" onclick="BN.more()"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="19" cy="12" r="1.4"/></svg>더보기</button>
+</div></nav>
+<button class="bn-fab" id="bnFab" type="button" aria-label="기록 추가" onclick="BN.plus()"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
 <button id="toTop" type="button" aria-label="맨 위로" title="맨 위로"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
 <div id="syncBadge" style="position:fixed;left:12px;bottom:12px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:5px 11px;font-size:11px;color:var(--muted);box-shadow:var(--shadow);z-index:50">☁️ 연결 중…</div>
 <div id="loginOverlay" style="position:fixed;inset:0;background:var(--bg);z-index:999;display:flex;align-items:center;justify-content:center;padding:24px">
@@ -3300,6 +3365,41 @@ if (window.LOGIN_DISABLED) {
 
 </script>
 <script>
+
+// ===== 하단 바 동작 =====
+var BN=(function(){
+  const tb=t=>document.querySelector('.tab[data-tab="'+t+'"]');
+  let lastCyc='transfer';
+  const grp=t=>t==='dashboard'?'home':(t==='cycles'||t==='transfer')?'cyc':t==='medication'?'med':'more';
+  const add=document.getElementById('qaAdd'),more=document.getElementById('qaMore'),dim=document.getElementById('qaDim'),fab=document.getElementById('bnFab');
+  function sync(){
+    const a=document.querySelector('.tab.active'),t=a?a.dataset.tab:'dashboard';
+    if(t==='cycles'||t==='transfer')lastCyc=t;
+    document.querySelectorAll('.bn[data-g]').forEach(b=>b.classList.toggle('on',b.dataset.g===grp(t)));
+    document.querySelectorAll('.cyc-sw button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));
+  }
+  document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>setTimeout(sync,0)));
+  function close(){add.classList.remove('show');more.classList.remove('show');dim.classList.remove('show');fab.classList.remove('open')}
+  function tab(t){close();const b=tb(t);if(b)b.click();window.scrollTo(0,0)}
+  function open(el){const was=el.classList.contains('show');close();if(!was){el.classList.add('show');dim.classList.add('show');if(el===add)fab.classList.add('open')}}
+  window.CYCSW=function(t){tab(t)};
+  setTimeout(sync,0);
+  return{
+    tab,close,
+    cyc(){tab(lastCyc)},
+    plus(){open(add)},
+    more(){open(more)},
+    go(t){tab(t)},
+    add(k){
+      close();
+      if(k==='med'){const b=tb('medication');if(b)b.click();window.scrollTo(0,0);setTimeout(()=>{try{window.MED&&MED.openSchedule()}catch(e){}},120);return}
+      if(k==='sub'){tab('finance');setTimeout(()=>openSubModal(),80);return}
+      if(k==='memo'){tab('questions');setTimeout(()=>{const t=document.getElementById('notesText');if(t){t.scrollIntoView({block:'center'});t.focus()}},120);return}
+      openModal(k);
+    }
+  };
+})();
+
 // ===== 맨 위로 버튼 + 좌우 스와이프 탭 이동 =====
 (function(){
   const btn=document.getElementById('toTop');if(!btn)return;
@@ -3312,7 +3412,7 @@ if (window.LOGIN_DISABLED) {
   });
   // 스와이프
   let sx=0,sy=0,st=0,ok=false;
-  const BLOCK='input,textarea,select,canvas,video,.modal,.info-modal,.modal-bg,#ptCrop,#ptCam,#ptView,#loginOverlay,.tabs,.toast';
+  const BLOCK='input,textarea,select,canvas,video,.modal,.info-modal,.modal-bg,#ptCrop,#ptCam,#ptView,#loginOverlay,.tabs,.toast,.bnav,.qa-sheet,.qa-dim,.bn-fab';
   function blocked(path){
     for(const el of path){
       if(!(el instanceof Element))continue;
