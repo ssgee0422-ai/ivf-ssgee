@@ -9,8 +9,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="IVF Journey">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" type="image/png" href="icons/icon-192.png">
-<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <title>My IVF Journey</title>
 <style>
 :root{
@@ -26,7 +26,6 @@ button{cursor:pointer}
 .app{max-width:1180px;margin:auto;padding:24px 18px 60px}
 .hero{background:linear-gradient(135deg,#f4e6e8,#fbf7f4 65%);border:1px solid var(--line);border-radius:28px;padding:22px 26px;box-shadow:var(--shadow);margin-bottom:16px}
 .eyebrow{font-size:30px;letter-spacing:.06em;color:var(--accent);font-weight:800;line-height:1.15;margin-bottom:6px}
-.top-actions .btn{padding:6px 12px;font-size:12px}
 h1{margin:6px 0 4px;font-size:32px;letter-spacing:-.04em}
 .subtitle{color:var(--muted);margin:0;font-size:13px}
 .top-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
@@ -211,8 +210,8 @@ body{padding-bottom:env(safe-area-inset-bottom,0px)}
   .subtitle{font-size:12px}
   .top-actions{display:grid;grid-template-columns:repeat(12,1fr);gap:6px;margin-top:10px}
   .eyebrow{font-size:25px;letter-spacing:.05em;margin-bottom:4px}
-  .top-actions .btn{padding:4px 4px;min-height:30px;text-align:center;white-space:nowrap;font-size:12px;border-radius:10px}
-  .top-actions .add{grid-column:span 4}.top-actions .util{grid-column:span 5}.top-actions .util.pill{grid-column:span 2;font-size:14px}
+  .top-actions .btn{padding:7px 4px;min-height:36px;text-align:center;white-space:nowrap;font-size:13px}
+  .top-actions .add{grid-column:span 4}.top-actions .util{grid-column:span 5}.top-actions .util.pill{grid-column:span 2;font-size:16px}
   .tabs{margin:0 -12px;padding:6px 12px 10px}
   .tab{padding:9px 14px;font-size:13px}
   .card{padding:14px;border-radius:16px}
@@ -386,6 +385,12 @@ body{padding-bottom:env(safe-area-inset-bottom,0px)}
 .close{background-image:linear-gradient(180deg,#fbf8f7 0%,#ebe3e0 100%);box-shadow:0 2px 0 #d5c9c6,inset 0 1px 0 #fff}
 .btn:active,.tab:active,.pick-chip:active,.pm-act button:active,.close:active{transform:translateY(2px);box-shadow:0 0 0 transparent,inset 0 2px 5px rgba(0,0,0,.22)}
 .btn:disabled{opacity:.55;transform:none}
+
+/* ===== 맨 위로 버튼 ===== */
+#toTop{position:fixed;right:14px;bottom:18px;width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:#fff;color:var(--accent);box-shadow:0 4px 14px rgba(70,45,45,.22);display:flex;align-items:center;justify-content:center;z-index:29;opacity:0;pointer-events:none;transform:translateY(8px);transition:opacity .2s,transform .2s;padding:0}
+#toTop.show{opacity:1;pointer-events:auto;transform:none}
+#toTop:active{transform:scale(.92)}
+#toTop svg{width:22px;height:22px}
 </style>
 </head>
 <body>
@@ -425,7 +430,7 @@ body{padding-bottom:env(safe-area-inset-bottom,0px)}
         <div class="card span-h dash-c dash-link" role="button" tabindex="0" onclick="goTab('cycles')"><div class="stat-label">총 채취 횟수</div><div class="stat" id="dCycles">0회</div></div>
         <div class="card dash-c wide dash-link" role="button" tabindex="0" id="dSub" onclick="goTab('finance','subMgmt')"></div>
         <div class="card span-12" id="embStatus"></div>
-        <div class="card span-12" id="costCard"></div>
+        <div class="card span-12 dash-link" role="button" tabindex="0" id="costCard" onclick="goTab('finance')"></div>
         <div class="card span-12">
           <div style="display:flex;justify-content:space-between;align-items:center"><h2 style="margin:0">통합 타임라인 (최근)</h2><button class="btn sm" onclick="document.querySelector('[data-tab=timeline]').click()">전체 보기</button></div>
           <div id="recentEvents" style="margin-top:14px"></div>
@@ -524,6 +529,7 @@ body{padding-bottom:env(safe-area-inset-bottom,0px)}
     </section>
   </main>
   <div class="footer">기록은 부부 두 분만 접근할 수 있는 클라우드(Firebase)에 저장되고 자동으로 함께 동기화됩니다.<br><span id="whoami"></span> <button class="btn" type="button" onclick="window.cloudLogout&&window.cloudLogout()" style="margin-left:6px">로그아웃</button></div>
+<button id="toTop" type="button" aria-label="맨 위로" title="맨 위로"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
 <div id="syncBadge" style="position:fixed;left:12px;bottom:12px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:5px 11px;font-size:11px;color:var(--muted);box-shadow:var(--shadow);z-index:50">☁️ 연결 중…</div>
 <div id="loginOverlay" style="position:fixed;inset:0;background:var(--bg);z-index:999;display:flex;align-items:center;justify-content:center;padding:24px">
   <div style="max-width:340px;text-align:center">
@@ -1100,7 +1106,7 @@ function openModal(type){
         <div style="grid-column:1/-1"><label style="font-size:10px;color:var(--muted);font-weight:700;display:block;margin-bottom:5px">β-hCG 호르몬 검사</label><div id="hcgRows"></div><button class="btn" type="button" onclick="addHcgRow()">＋ HCG 검사 추가 기록</button></div>
         <div style="grid-column:1/-1">${auxHtml()}</div>
         <div class="field full"><label>처방 약물</label><textarea id="f_meds" placeholder="크리논겔, 크렉산, 주사 등"></textarea></div>
-                <div class="field full"><label>메모</label><textarea id="f_note" placeholder="기타 메모"></textarea></div>
+                <div class="field full"><label>기타 메모</label><textarea id="f_note" placeholder="기타 메모"></textarea></div>
       </div>
       <div class="sub-section">
         <h4>이식 관련 비용 추가 (진료비 / 약제비 / 기타)</h4>
@@ -2102,8 +2108,9 @@ function renderTransfers(){
     ${x.meds?`<div class="note n-med" style="margin-top:8px"><b>처방 약물</b><div class="ml" style="margin-top:3px">${nl(x.meds)}</div></div>`:''}
     <div class="kvg">${kvRow('보조처방',auxList(x).length?auxList(x).map(esc):['미시행'])}</div>
     ${costBlock(x)}
+    ${x.note?`<div class="note n-memo" style="margin-top:8px"><b>기타 메모</b><div class="ml" style="margin-top:3px">${nl(x.note)}</div></div>`:''}
     <div style="background:#fff;border:1px solid #eee;border-radius:10px;padding:8px 12px;margin:8px 0;font-size:11px"><div style="font-weight:bold;color:var(--accent);margin-bottom:4px">β-hCG 호르몬 수치 추이</div>${hcgList(x).map((h,i)=>`<div><b>${i+1}차:</b> ${fmt(h.date)} → <strong style="color:var(--accent)">${esc(h.val||'-')}</strong></div>`).join('')||'<div class="muted">기록 없음</div>'}</div>
-    ${symSection(x)}${x.note?`<div class="note n-memo" style="margin-top:8px"><b>메모</b><div class="ml" style="margin-top:3px">${nl(x.note)}</div></div>`:''}
+    ${symSection(x)}
     ${ptSection(x)}
     ${usSection(x)}</div>`}).join('')}</div>`;
   hydratePtImages();
@@ -3305,6 +3312,49 @@ if (window.LOGIN_DISABLED) {
     });
   });
 }
+
+
+</script>
+<script>
+// ===== 맨 위로 버튼 + 좌우 스와이프 탭 이동 =====
+(function(){
+  const btn=document.getElementById('toTop');if(!btn)return;
+  const upd=()=>btn.classList.toggle('show',(window.scrollY||document.documentElement.scrollTop)>400);
+  window.addEventListener('scroll',upd,{passive:true});upd();
+  btn.addEventListener('click',()=>{
+    const from=window.scrollY||document.documentElement.scrollTop,t0=performance.now(),D=260;
+    const step=t=>{const k=Math.min(1,(t-t0)/D),e=1-Math.pow(1-k,3);window.scrollTo(0,from*(1-e));if(k<1)requestAnimationFrame(step)};
+    requestAnimationFrame(step);
+  });
+  // 스와이프
+  let sx=0,sy=0,st=0,ok=false;
+  const BLOCK='input,textarea,select,canvas,video,.modal,.info-modal,.modal-bg,#ptCrop,#ptCam,#ptView,#loginOverlay,.tabs,.toast';
+  function blocked(path){
+    for(const el of path){
+      if(!(el instanceof Element))continue;
+      if(el.matches&&el.matches(BLOCK))return true;
+      if(el===document.body)break;
+      const cs=getComputedStyle(el),ox=cs.overflowX;
+      if((ox==='auto'||ox==='scroll')&&el.scrollWidth>el.clientWidth+2)return true;
+    }
+    return false;
+  }
+  document.addEventListener('touchstart',e=>{
+    if(e.touches.length!==1){ok=false;return}
+    const t=e.touches[0];sx=t.clientX;sy=t.clientY;st=Date.now();
+    ok=!blocked(e.composedPath());
+  },{passive:true});
+  document.addEventListener('touchend',e=>{
+    if(!ok)return;ok=false;
+    const t=e.changedTouches[0],dx=t.clientX-sx,dy=t.clientY-sy;
+    if(Date.now()-st>700||Math.abs(dx)<70||Math.abs(dx)<Math.abs(dy)*1.8)return;
+    const tabs=[...document.querySelectorAll('.tab')],i=tabs.findIndex(x=>x.classList.contains('active'));
+    const n=i+(dx<0?1:-1);if(i<0||n<0||n>=tabs.length)return;
+    tabs[n].click();
+    tabs[n].scrollIntoView({block:'nearest',inline:'center',behavior:'smooth'});
+    window.scrollTo(0,0);
+  },{passive:true});
+})();
 </script>
 <script>
 if('serviceWorker' in navigator && location.protocol.startsWith('http')){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))}
