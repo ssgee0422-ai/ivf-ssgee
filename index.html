@@ -62,6 +62,24 @@ th{color:var(--muted);font-size:10px}
 .pick-chip{flex:0 0 auto;border:1px solid var(--line);background:#fff;color:var(--muted);border-radius:99px;padding:7px 13px;font-size:12px;font-weight:650;white-space:nowrap}
 .pick-chip.on{background:#302b29;color:#fff;border-color:#302b29}
 .timeline{position:relative;margin:5px 0 0 9px;padding-left:25px;border-left:2px solid #eadbdd}
+.tl-seg{display:flex;margin-top:14px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:3px}
+.tl-seg button{flex:1;border:0;background:none;padding:7px;border-radius:999px;font-size:12px;color:var(--muted);font-weight:650}
+.tl-seg button.on{background:var(--text);color:#fff}
+.cal-mh{display:flex;align-items:center;justify-content:space-between;margin:14px 0 8px}.cal-mh b{font-size:17px}
+.cal-nb{width:32px;height:32px;border-radius:50%;background:var(--soft);border:1px solid #ead7da;color:var(--accent);font-size:15px;line-height:1;padding:0}
+.cal-lg{display:flex;gap:10px;flex-wrap:wrap;font-size:10.5px;color:var(--muted);margin-bottom:6px}.cal-lg i,.cal-dots i{display:inline-block;border-radius:50%}.cal-lg i{width:8px;height:8px;margin-right:4px}
+.cal-g{display:grid;grid-template-columns:repeat(7,1fr);text-align:center}
+.cal-w{font-size:10.5px;color:var(--muted);padding:4px 0}.cal-w:first-child{color:#c07a7a}
+.cal-d{height:52px;padding-top:5px;font-size:12.5px;border-radius:12px;border:0;background:none;color:var(--text);cursor:pointer}
+.cal-d.sun{color:#c07a7a}.cal-d.o{color:#cfc6c2}
+.cal-d .n{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%}
+.cal-d.t .n{border:1.5px solid var(--accent);color:var(--accent);font-weight:700}
+.cal-d.s{background:var(--soft)}.cal-d.s .n{background:var(--accent);color:#fff;font-weight:700;border:0}
+.cal-dots{display:flex;gap:2.5px;justify-content:center;margin-top:3px;min-height:6px}.cal-dots i{width:6px;height:6px}
+.cal-day{margin-top:12px;border-top:1px solid var(--line)}.cal-dh{font-size:12px;color:var(--muted);padding:10px 0 2px}
+.cal-ev{display:flex;gap:10px;padding:10px 0;border-top:1px solid var(--line)}.cal-ev:first-of-type{border-top:0}
+.cal-ev .c{width:4px;border-radius:2px;flex:none}.cal-ev .t{font-size:13.5px;font-weight:700}.cal-ev .m{font-size:11.5px;color:var(--muted);margin-top:1px}
+.cal-empty{color:var(--muted);font-size:12px;padding:14px 0;text-align:center}
 .event{position:relative;padding:0 0 18px}.event:before{content:"";position:absolute;left:-32px;top:4px;width:11px;height:11px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px var(--soft)}
 .event-date{font-size:10px;color:var(--accent);font-weight:750}.event-title{font-weight:750;font-size:13px}.event-note{font-size:11px;color:var(--muted)}
 .badge{display:inline-block;padding:2px 7px;border-radius:999px;background:var(--soft);color:var(--accent);font-size:9px;font-weight:700}
@@ -601,7 +619,9 @@ body{overscroll-behavior-x:none}
     <section id="timeline" class="panel">
       <div class="card">
         <div class="sec-head"><div><h2>통합 타임라인 <button class="info-btn" type="button" aria-haspopup="dialog" aria-label="통합 타임라인 설명 보기" data-info="채취, 이식, HCG 검사, 진료, 영양제 시작일이 날짜순으로 자동 기록됩니다. (식단/운동 제외)">ⓘ</button></h2></div><button class="btn primary add-sm" onclick="openModal('event')">＋ 타임라인 추가</button></div>
+        <div class="tl-seg"><button type="button" id="tlvList" class="on" onclick="tlView('list')">목록</button><button type="button" id="tlvCal" onclick="tlView('cal')">캘린더</button></div>
         <div id="timelineList" style="margin-top:18px"></div>
+        <div id="timelineCal" style="display:none"></div>
       </div>
     </section>
 
@@ -1925,6 +1945,45 @@ function goTab(tab,target){const t=document.querySelector('.tab[data-tab="'+tab+
 document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.classList&&e.target.classList.contains('dash-link')){e.preventDefault();e.target.click()}});
 function setTabsH(){const t=document.querySelector('.tabs');if(t)document.documentElement.style.setProperty('--tabsH',t.offsetHeight+'px')}
 window.addEventListener('resize',setTabsH);window.addEventListener('load',setTabsH);setTimeout(setTabsH,300);
+
+// ===== 타임라인 캘린더 =====
+let TLV='list',TLM=(()=>{const n=new Date();return n.getFullYear()+'-'+String(n.getMonth()+1).padStart(2,'0')})(),TLSEL=null;
+const TLC={'이식주기':'#9b6b72','채취주기':'#71869d','진료/검사':'#6f8f7b','HCG검사':'#b28a54','초음파':'#8f7aa8','증상':'#cf8f6a'};
+const tlColor=t=>TLC[t]||'#b9a0a6';
+function calItems(){
+  const it=getAllMergedTimeline().slice();
+  (db.transfers||[]).forEach(t=>{
+    (t.us||[]).forEach(p=>{if(p.date)it.push({date:p.date,type:'초음파',title:'초음파 · '+t.name,note:[usLabel(p),p.memo].filter(Boolean).join(' · '),btn:(p.photoId?'<button class="btn sm" onclick="viewUs(\''+t.id+'\',\''+p.id+'\')">사진 보기</button>':'')+'<button class="btn sm" onclick="openUs(\''+t.id+'\',\''+p.id+'\')">수정</button>'})});
+    (t.symptoms||[]).forEach(v=>{const d=symDate(t,v);if(d){const dd=symDd2(t,d);it.push({date:d,type:'증상',title:'증상 · '+t.name+(dd?' '+dd:''),note:v.text||'',btn:'<button class="btn sm" onclick="openSym(\''+t.id+'\')">수정</button>'})}})
+  });
+  return it;
+}
+function symDd2(t,d){const n=ptDays(t.date,d);return n==null?'':(n>=0?'D+'+n:'D'+n)}
+function tlView(v){TLV=v;document.getElementById('tlvList').classList.toggle('on',v==='list');document.getElementById('tlvCal').classList.toggle('on',v==='cal');document.getElementById('timelineList').style.display=v==='list'?'':'none';document.getElementById('timelineCal').style.display=v==='cal'?'':'none';if(v==='cal')renderTimelineCal()}
+function tlMove(d){let [y,m]=TLM.split('-').map(Number);m+=d;if(m<1){m=12;y--}if(m>12){m=1;y++}TLM=y+'-'+String(m).padStart(2,'0');TLSEL=null;renderTimelineCal()}
+function tlPick(k){TLSEL=k;renderTimelineCal()}
+function renderTimelineCal(){
+  const el=document.getElementById('timelineCal');if(!el)return;
+  const [y,m]=TLM.split('-').map(Number);
+  const items=calItems();const by={};items.forEach(x=>{(by[x.date]=by[x.date]||[]).push(x)});
+  const first=new Date(y,m-1,1).getDay(),dim=new Date(y,m,0).getDate(),prevDim=new Date(y,m-1,0).getDate();
+  const n=new Date(),todayK=n.getFullYear()+'-'+String(n.getMonth()+1).padStart(2,'0')+'-'+String(n.getDate()).padStart(2,'0');
+  if(!TLSEL){const inM=Object.keys(by).filter(k=>k.slice(0,7)===TLM);TLSEL=todayK.slice(0,7)===TLM?todayK:(inM.sort()[0]||TLM+'-01')}
+  let h='<div class="cal-mh"><button class="cal-nb" type="button" onclick="tlMove(-1)" aria-label="이전 달">‹</button><b>'+y+'년 '+m+'월</b><button class="cal-nb" type="button" onclick="tlMove(1)" aria-label="다음 달">›</button></div>';
+  h+='<div class="cal-lg"><span><i style="background:#9b6b72"></i>이식</span><span><i style="background:#71869d"></i>채취</span><span><i style="background:#6f8f7b"></i>진료/검사</span><span><i style="background:#b28a54"></i>HCG</span><span><i style="background:#8f7aa8"></i>초음파</span><span><i style="background:#cf8f6a"></i>증상</span><span><i style="background:#b9a0a6"></i>기타</span></div><div class="cal-g">';
+  ['일','월','화','수','목','금','토'].forEach(w=>h+='<div class="cal-w">'+w+'</div>');
+  for(let i=0;i<first;i++)h+='<div class="cal-d o"><span class="n">'+(prevDim-first+1+i)+'</span></div>';
+  for(let d=1;d<=dim;d++){
+    const k=TLM+'-'+String(d).padStart(2,'0'),ev=by[k]||[],cols=[...new Set(ev.map(e=>tlColor(e.type)))].slice(0,4),dow=(first+d-1)%7;
+    h+='<button type="button" class="cal-d'+(dow===0?' sun':'')+(k===todayK?' t':'')+(k===TLSEL?' s':'')+'" onclick="tlPick(\''+k+'\')"><span class="n">'+d+'</span><div class="cal-dots">'+cols.map(c=>'<i style="background:'+c+'"></i>').join('')+'</div></button>';
+  }
+  const tail=(7-(first+dim)%7)%7;for(let i=1;i<=tail;i++)h+='<div class="cal-d o"><span class="n">'+i+'</span></div>';
+  h+='</div>';
+  const sel=by[TLSEL]||[],sd=new Date(TLSEL+'T00:00:00');
+  h+='<div class="cal-day"><div class="cal-dh">'+(sd.getMonth()+1)+'월 '+sd.getDate()+'일 ('+'일월화수목금토'[sd.getDay()]+') · '+sel.length+'건</div>';
+  h+=sel.length?sel.map(x=>'<div class="cal-ev"><div class="c" style="background:'+tlColor(x.type)+'"></div><div style="min-width:0"><div class="t">'+esc(x.title)+'<span class="badge '+(x.cls||'')+'" style="margin-left:6px">'+esc(x.type)+'</span></div><div class="m">'+esc(x.note||'')+'</div>'+(x.btn?'<div style="margin-top:5px">'+x.btn+'</div>':'')+(x.canEdit?'<div style="margin-top:5px"><button class="btn sm" onclick="editRecord(\'event\',\''+x.id+'\')">수정</button><button class="btn danger sm" onclick="del(\'events\',\''+x.id+'\')">삭제</button></div>':'')+'</div></div>').join(''):'<div class="cal-empty">이 날은 기록된 일정이 없어요.</div>';
+  h+='</div>';el.innerHTML=h;
+}
 function renderTimeline(){
   const el = document.getElementById('timelineList');
   const items = getAllMergedTimeline();
@@ -1937,6 +1996,7 @@ function renderTimeline(){
       ${x.canEdit ? `<div style="margin-top:5px;"><button class="btn sm" onclick="editRecord('event','${x.id}')">수정</button><button class="btn danger sm" onclick="del('events','${x.id}')">삭제</button></div>` : ''}
     </div>
   `).join('')}</div>` : '<div class="empty">타임라인 기록이 없습니다.</div>';
+  if(typeof TLV!=='undefined'&&TLV==='cal')renderTimelineCal();
 }
 
 
