@@ -666,7 +666,7 @@ body{overscroll-behavior-x:none}
 <div id="loginOverlay" style="position:fixed;inset:0;background:var(--bg);z-index:999;display:flex;align-items:center;justify-content:center;padding:24px">
   <div style="max-width:340px;text-align:center">
     <div class="eyebrow">MY IVF ARCHIVE</div>
-    <h1 style="font-size:26px">함께 보는 시험관 기록</h1>
+    <h1 style="font-size:26px">함께 보는 IVF 기록</h1>
     <p id="loginMsg" class="subtitle" style="margin-bottom:20px">등록된 구글 계정으로 로그인해 주세요.</p>
     <button id="loginBtn" class="btn primary" style="padding:12px 20px;font-size:14px;width:100%">Google 계정으로 로그인</button>
     <p class="subtitle" style="margin-top:16px;font-size:11px">카카오톡에서 링크를 눌렀는데 로그인이 안 되면<br>오른쪽 아래(또는 위) 메뉴에서 <b>'다른 브라우저로 열기'</b>를 눌러<br>크롬/사파리에서 열어 주세요.</p>
@@ -967,6 +967,20 @@ h2{font-size:17px;font-weight:750}
 /* 처방기록 표 */
 .sh-table th,.sh-table td{text-align:center!important;white-space:nowrap;font-size:12px!important;padding:8px 5px!important}
 .sh-table td .btn{padding:3px 8px;font-size:11px}
+.hm-note{font-size:11px;color:#8a817e;margin:8px 0 10px;line-height:1.7}
+.hm-lg{display:inline-block;min-width:20px;text-align:center;border-radius:6px;padding:0 4px;font-weight:800;font-size:10.5px}
+.hm-lg.ok{background:#e3f1e6;color:#5f8f6e}.hm-lg.part{background:#fff1cc;color:#b28a54}.hm-lg.none{color:#b9aeab}
+.hm-wrap{overflow:auto;border:1px solid #eee6e2;border-radius:14px;max-height:none;-webkit-overflow-scrolling:touch}
+.hm-table{border-collapse:separate;border-spacing:0;font-size:11px;width:max-content;min-width:100%}
+.hm-table th,.hm-table td{padding:0!important;text-align:center;white-space:nowrap;border-bottom:1px solid #f1eae7;font-size:11px!important}
+.hm-table thead th{position:sticky;top:0;z-index:3;background:#faf7f6;height:30px;color:#8a817e;font-weight:700}
+.hm-table .hm-d{min-width:34px;width:34px;font-size:10.5px!important;letter-spacing:-.3px}
+.hm-table .hm-name{position:sticky;left:0;z-index:4;background:#faf7f6;text-align:left!important;padding:6px 8px!important;min-width:84px;max-width:96px;border-right:1px solid #eee6e2;box-shadow:2px 0 4px rgba(75,50,45,.05)}
+.hm-table tbody .hm-name{background:#fff;z-index:2;font-weight:600}
+.hm-table .hm-name b{display:block;font-size:11.5px;overflow:hidden;text-overflow:ellipsis}.hm-table .hm-name small{display:block;color:#9a918e;font-size:10px;font-weight:500}
+.hm-table td.hm-c{height:38px;font-weight:800}
+.hm-table td.none{color:#d3c9c6;font-weight:400}.hm-table td.ok{color:#5f8f6e;background:#f1f8f3}.hm-table td.part{color:#b28a54;background:#fff8e8;font-size:10px!important}
+.hm-table .hm-today{box-shadow:inset 2px 0 0 #d9b9be,inset -2px 0 0 #d9b9be}.hm-table thead .hm-today{color:#9b6b72;background:#f6e8ea}
 /* 키보드 대응 */
 .modal-bg{height:var(--vvh,100%);bottom:auto!important;top:var(--vvt,0px)!important}
 .modal{max-height:none}
@@ -1058,12 +1072,8 @@ h2{font-size:17px;font-weight:750}
   <h2>최근 투약 기록 <button class="info-i" type="button" aria-label="설명 보기" onclick="MED.info('hist')">ⓘ</button></h2>
   <button class="btn btn-sm danger" onclick="MED.resetHistory()">전체 삭제</button>
 </div>
-<div class="table hist-wrap">
-  <table class="hist-table">
-    <thead><tr><th>날짜</th><th>약품명</th><th>투약수량</th><th>시간</th><th>상태</th><th></th></tr></thead>
-    <tbody id="history"></tbody>
-  </table>
-</div>
+<div class="hm-note">약품별로 날짜마다 투약 체크가 자동 반영돼요. <span class="hm-lg ok">✓</span> 모두 완료 · <span class="hm-lg part">1/2</span> 일부 완료 · <span class="hm-lg none">·</span> 기록 없음</div>
+<div class="hm-wrap" id="histWrap"><table class="hm-table"><thead id="histHead"></thead><tbody id="history"></tbody></table></div>
 </div>
 
 </div>
@@ -2313,7 +2323,7 @@ function renderEmbryos(){
   sm.innerHTML=`<div class="kpis"><div class="kpi"><div class="stat-label">전체 배아</div><strong>${s.total}개</strong></div><div class="kpi"><div class="stat-label">이식 배아 누계</div><strong>${s.usedN}개</strong></div><div class="kpi"><div class="stat-label">폐기</div><strong>${s.disc}개</strong></div><div class="kpi" style="background:var(--soft)"><div class="stat-label">보관 중</div><strong style="color:var(--accent)">${s.stored}개</strong></div></div>`;
   if(!db.cycles.length){el.innerHTML='<div class="card empty" style="margin-top:14px">등록된 채취주기가 없습니다. 채취주기 탭에서 먼저 추가해 주세요.</div>';return}
   const list=db.cycles.map((c,i)=>({c,i})).sort((a,b)=>ck(a.c).localeCompare(ck(b.c))||a.i-b.i);
-  el.innerHTML=list.map(({c},n)=>{
+  el.innerHTML=list.map((o,n)=>({c:o.c,n})).reverse().map(({c,n})=>{
     const l=c.embryosList||[],cnt={n:0,st:0,us:0,di:0};l.forEach(e=>{const t=embState(e,u)[0];cnt.n++;if(t==='보관중')cnt.st++;else if(t==='사용')cnt.us++;else cnt.di++});
     const resCnt={};l.forEach(e=>{const r=e.result||RES[0];resCnt[r]=(resCnt[r]||0)+1});
     const chips=Object.entries(resCnt).map(([k,v])=>`<span class="badge ${embResCls(k)}" style="margin-right:4px">${esc(k)} ${v}</span>`).join('');
@@ -3287,11 +3297,35 @@ function saveSchedule(e){
 }
 
 function renderHistory(){
- let hs=db.logs.filter(x=>x.done).sort((a,b)=>(b.date+b.at).localeCompare(a.date+a.at)).slice(0,40),body=R.getElementById("history");
- if(!hs.length){body.innerHTML='<tr><td colspan="6" class="empty">아직 완료된 투약 기록이 없습니다.</td></tr>';return}
- body.innerHTML=hs.map(x=>{let s=db.schedules.find(y=>y.id===x.schId),m=s&&med(s.medId);if(!s||!m)return "";
- let useQtyText = m ? `${fmt(m.useQty||1)}${m.unit||'개'}` : "-";
- return `<tr><td>${x.date}</td><td><b>${esc(m.name)}</b></td><td>1회 ${esc(useQtyText)}</td><td>${esc(s.time||s.period||"-")}</td><td>완료</td><td><button class="btn btn-sm" onclick="MED.undo('${s.id}','${x.date}')">취소</button></td></tr>`}).join("");
+ const head=R.getElementById("histHead"),body=R.getElementById("history"),wrap=R.getElementById("histWrap");
+ if(!head||!body)return;
+ const done=db.logs.filter(x=>x.done&&db.schedules.some(y=>y.id===x.schId));
+ if(!done.length){head.innerHTML="";body.innerHTML='<tr><td class="empty" style="padding:18px">아직 완료된 투약 기록이 없습니다.</td></tr>';return}
+ // 날짜 범위: 첫 기록일 ~ 오늘(또는 마지막 기록일), 최대 120일
+ let ds=done.map(x=>x.date).sort(),first=ds[0],last=ds[ds.length-1],tdy=localDate();if(tdy>last)last=tdy;
+ const days=[];for(let t=new Date(first+"T00:00:00");;t.setDate(t.getDate()+1)){const k=localDate(t);days.push(k);if(k>=last||days.length>400)break}
+ const cols=days.slice(-120);
+ const md=k=>{const p=k.split("-");return (+p[1])+"/"+(+p[2])};
+ const cnt={},cntLast={};done.forEach(x=>{const s=db.schedules.find(y=>y.id===x.schId);if(!s)return;const key=s.medId+"|"+x.date;cnt[key]=(cnt[key]||0)+1;if(!cntLast[key]||(x.at||"")>(cntLast[key].at||""))cntLast[key]=x});
+ const planned=(mid,date)=>db.schedules.filter(y=>y.medId===mid&&(!y.start||y.start<=date)&&(!y.end||y.end>=date)).length;
+ const meds=db.meds.filter(m=>done.some(x=>{const s=db.schedules.find(y=>y.id===x.schId);return s&&s.medId===m.id}));
+ head.innerHTML='<tr><th class="hm-name">약품명</th>'+cols.map(k=>'<th class="hm-d'+(k===tdy?' hm-today':'')+'">'+md(k)+'</th>').join("")+'</tr>';
+ body.innerHTML=meds.map(m=>'<tr><th class="hm-name"><b>'+esc(m.name)+'</b><small>'+esc(m.dose||"")+'</small></th>'+cols.map(k=>{
+   const n=cnt[m.id+"|"+k]||0,p=Math.max(planned(m.id,k),n);
+   const cls=(k===tdy?' hm-today':'');
+   if(!n)return '<td class="hm-c none'+cls+'">·</td>';
+   const lg=cntLast[m.id+"|"+k],sid=lg?lg.schId:"";
+   const full=n>=p;
+   return '<td class="hm-c '+(full?'ok':'part')+cls+'">'+(full?'✓':n+'/'+p)+'</td>';
+ }).join("")+'</tr>').join("");
+ if(wrap&&wrap.clientWidth&&!wrap._scrolled){wrap.scrollLeft=wrap.scrollWidth;wrap._scrolled=true}
+}
+function undoCell(mid,date){
+ const l=db.logs.filter(x=>x.done&&x.date===date&&db.schedules.some(y=>y.id===x.schId&&y.medId===mid)).sort((a,b)=>(a.at||"").localeCompare(b.at||""));
+ if(!l.length)return;
+ const m=med(mid),p=date.split("-");
+ if(!confirm((+p[1])+"/"+(+p[2])+" "+(m?m.name:"")+" 투약 기록을 취소할까요?"+(l.length>1?" (가장 최근 1건)":"")))return;
+ undo(l[l.length-1].schId,date);
 }
 function undo(sid,date){
  let i=db.logs.findIndex(x=>x.schId===sid&&x.date===date),s=db.schedules.find(x=>x.id===sid),m=s&&med(s.medId);
@@ -3308,6 +3342,7 @@ function view(v){
  curView=v||"today";setTimeout(chipH,0);
  R.querySelectorAll("[data-view]").forEach(e=>{e.hidden=e.getAttribute("data-view")!==curView});
  R.querySelectorAll(".vb").forEach(b=>b.classList.toggle("on",b.dataset.v===curView));
+ if(curView==="hist")setTimeout(()=>{const w=R.getElementById("histWrap");if(w)w.scrollLeft=w.scrollWidth},30);
 }
 const INFOTXT={
  today:["오늘의 투약 일정","오늘 복용할 약을 체크하면 남은 재고가 자동으로 줄어요. [전체 선택/해제] 버튼으로 한 번에 체크할 수 있고, ☰를 누른 채 끌어서 순서를 바꿀 수 있어요. 증상 메모에는 그날의 이상증세나 부작용 등을 적어 두세요.\n\n※ 개인 투약 기록용이에요. 정확한 용법과 스케줄은 담당 의료진의 지시에 따르세요."],
@@ -3401,7 +3436,7 @@ window.medApplyCloud=function(json){
  window.addEventListener("touchcancel",end,true);
 })();
 
-window.MED={view,info,resetAllData,openSchedule,moveDate,changeDate,today,toggleSelectAllDoses,resetTodayDose,deleteAllSchedules,saveDailyMemo,resetStockCards,openMed,resetHistory,closeMed,saveMed,closeAddStockModal,saveAddStock,closeStockHistoryModal,closeSchedule,saveSchedule,showStockHistory,addStock,addStockRow,deleteMed,openBak,closeBak,restoreBak,restoreCloudBak,toggleDose,deleteSchedule,handleDragStart,handleDragOver,handleDragLeave,handleDrop,handleDragEnd,deleteStockTx,undo};
+window.MED={view,info,resetAllData,openSchedule,moveDate,changeDate,today,toggleSelectAllDoses,resetTodayDose,deleteAllSchedules,saveDailyMemo,resetStockCards,openMed,resetHistory,closeMed,saveMed,closeAddStockModal,saveAddStock,closeStockHistoryModal,closeSchedule,saveSchedule,showStockHistory,addStock,addStockRow,deleteMed,openBak,closeBak,restoreBak,restoreCloudBak,toggleDose,deleteSchedule,handleDragStart,handleDragOver,handleDragLeave,handleDrop,handleDragEnd,deleteStockTx,undo,undoCell};
 })();
 </script>
 
