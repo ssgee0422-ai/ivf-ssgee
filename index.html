@@ -3102,7 +3102,7 @@ function toggleDose(sid,on){
    if(i>=0){if(db.logs[i].done)return;db.logs[i].done=true}
    else db.logs.push({id:uid(),schId:sid,date:d,done:true,at:new Date().toISOString()});
    let qty=Number(m.useQty)||1;
-   m.stock=Number(m.stock)||0;m.stock=Math.max(0,m.stock-qty);
+   m.stock=Number(m.stock)||0;m.stock=m.stock-qty;
    db.stockTx.push({id:uid(),medId:m.id,type:"use",qty,date:d,schId:sid});
  }else{
    if(i>=0)db.logs.splice(i,1);
@@ -3317,7 +3317,7 @@ function deleteStockTx(txId){
  const m = med(tx.medId);
  if(confirm(`[${tx.date}] +${tx.qty}개 추가 기록을 삭제하시겠습니까?\n(현재 재고 수량에서도 해당 수량이 차감됩니다.)`)){
    if(m){
-     m.stock = Math.max(0, (Number(m.stock)||0) - Number(tx.qty||0));
+     m.stock = (Number(m.stock)||0) - Number(tx.qty||0);
    }
    db.stockTx = db.stockTx.filter(x => x.id !== txId);
    save();
